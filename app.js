@@ -17,7 +17,7 @@ $(document).ready(() => {
     let welcome = w.welcomeScreen();
     welcome.launch();
     sw.getAllCountries().then(resp => {
-        ac.prepareUtilities(w.mainRoot).then(() => {
+        ac.prepareUtilities(w.mainRoot).finally(() => {
 
             /**
              * After loading all countries and sound effects, we are ready to.
