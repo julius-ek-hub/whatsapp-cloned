@@ -1,0 +1,148 @@
+/* Easy poppings */
+
+.easyFromTop {
+    animation: easyFromTop 0.5s 1;
+}
+
+.easyFromBottom {
+    animation: easyFromBottom 0.5s 1;
+}
+
+.easyFromLeft {
+    animation: easyFromLeft 0.5s 1;
+}
+
+.easyFromRight {
+    animation: easyFromRight 0.5s 1;
+}
+
+.autoEasy {
+    animation: autoEasy 0.5s 1;
+}
+
+.easy {
+    animation-fill-mode: both;
+    padding: 10px;
+}
+
+@keyframes easyFromTop {
+    from {
+        top: -100%;
+        opacity: 0;
+    }
+    to {
+        top: 5px;
+        opacity: 1;
+    }
+}
+
+@keyframes easyFromBottom {
+    from {
+        bottom: -50%;
+    }
+    to {
+        bottom: 5px;
+    }
+}
+
+@keyframes easyFromLeft {
+    from {
+        left: -50%;
+    }
+    to {
+        left: 5px;
+    }
+}
+
+@keyframes easyFromRight {
+    from {
+        right: -50%;
+    }
+    to {
+        right: 5px;
+    }
+}
+
+@keyframes autoEasy {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.appear-left {
+    animation: appearLeft 0.3s 1;
+    animation-fill-mode: both;
+}
+
+.disappear-left {
+    animation: disappearLeft 0.3s 1;
+    animation-fill-mode: both;
+}
+
+.appear-right {
+    animation: appearRight 0.3s 1;
+    animation-fill-mode: both;
+}
+
+.disappear-right {
+    animation: disappearRight 0.3s 1;
+    animation-fill-mode: both;
+}
+
+@keyframes appearRight {
+    from {
+        right: 100%;
+    }
+    to {
+        right: 0%;
+    }
+}
+
+@keyframes disappearRight {
+    from {
+        right: 0%;
+    }
+    to {
+        right: -100%;
+    }
+}
+
+@keyframes appearLeft {
+    from {
+        right: -100%;
+    }
+    to {
+        right: 0%;
+    }
+}
+
+@keyframes disappearLeft {
+    from {
+        right: 0%;
+    }
+    to {
+        right: 100%;
+    }
+}
+
+.spin {
+    animation: spinner 1s infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes spinner {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.project-version {
+    font-size: small;
+    color: rgba(0, 0, 0, 0.4);
+}

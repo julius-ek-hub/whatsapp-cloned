@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>File Viewer | 247 Developer</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+        }
+        
+        .c1 {
+            display: table;
+            height: 100%;
+            width: 100%;
+            background-color: #212529;
+        }
+        
+        .c2 {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+            color: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="c1">
+        <div class="c2" id="_c2"></div>
+    </div>
+    <script src="../no-module/helper.js"></script>
+
+    <script>
+        let q = url_query_string_value('f');
+        let src = q.to_utf8();
+        let f = new File_({
+            src: src,
+            type: '',
+            name: src
+        });
+
+        blob(src).then(resp => {
+            let tag = f.tag().attr({
+                style: {
+                    maxWidth: innerWidth + 'px',
+                    maxHeight: innerHeight + 'px'
+                }
+            }).appendTo(_('#_c2').self);
+            if (f.isImage()) {
+                tag.attr({
+                    src: resp
+                })
+            } else {
+                tag.self.controls = true;
+                tag.child(0).self.src = resp;
+            }
+        }).catch(err => {
+            _('#_c2').html(`<h2 style="color:orangered">ERROR 404: Requested URL does not exist or may have expired!</h2>`)
+        })
+    </script>
+</body>
+
+</html>
