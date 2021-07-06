@@ -1,8 +1,9 @@
 <?php
+
 define('ROOT', 'http://localhost/whatsapp-clone');
-
+// Color of the addres bar
 define('THEME_COL', '#1BA691');
-
+// Keywords for SEO
 define('KEY_WORDS', 'codes, coding, projects, blogs, programming, js, javascript, IT, python, PHP');
 
 //Database connection settings
