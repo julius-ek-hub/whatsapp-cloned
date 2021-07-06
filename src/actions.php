@@ -6,9 +6,8 @@ require 'abs-classes/DBC.class.php';
 require 'abs-classes/File.class.php';
 require 'rel-classes/db.class.php';
 require 'rel-classes/file.class.php';
-$db = new WCV1_0();
+$db = new WC(CONN);
 if(isset($_GET['countries'])){
-	$db = new DBC('247_dev');
 	$result = array();
 	$sql = $db->exec("SELECT * FROM country");
 	while($row = $sql->fetch_assoc()){

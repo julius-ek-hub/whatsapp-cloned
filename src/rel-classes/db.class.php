@@ -1,7 +1,7 @@
 <?php
-class WCV1_0 extends DBC{
-    function __construct(){
-	parent::__construct('whatsapp_v1_0');
+class WC extends DBC{
+    function __construct($CONN){
+	parent::__construct($CONN);
  }
  function add_visitor($details){
     try{
