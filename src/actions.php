@@ -1,5 +1,7 @@
 <?php
+
 date_default_timezone_set('Asia/Dubai');
+
 require 'Config.php';
 require 'functions.php';
 require 'abs-classes/DBC.class.php';
