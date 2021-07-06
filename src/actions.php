@@ -9,7 +9,7 @@ require 'rel-classes/file.class.php';
 $db = new WC(CONN);
 if(isset($_GET['countries'])){
 	$result = array();
-	$sql = $db->exec("SELECT * FROM country");
+	$sql = $db->exec("SELECT * FROM countries");
 	while($row = $sql->fetch_assoc()){
 		$result[$row['iso']] = $row;
 	}
