@@ -5,6 +5,14 @@ define('THEME_COL', '#1BA691');
 
 define('KEY_WORDS', 'codes, coding, projects, blogs, programming, js, javascript, IT, python, PHP');
 
+//Database connection settings
+define('CONN', array(
+    'HOST' => 'localhost',
+    'DBNAME' => 'whatsapp_clone',
+    'DBUSER' => 'root',
+    'PASSWORD' => ''
+));
+
 
 define('MAILER', array(
     'admin' => array(

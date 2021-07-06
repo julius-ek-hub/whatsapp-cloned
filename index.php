@@ -5,13 +5,12 @@ $description = 'Try testing this project built using only PHP, MySQL, JavaScript
 $thumbnail = ROOT . '/images/whatsapp-logo.png';
 if (isset($_GET['invite']) && !empty($_GET['invite'])) {
     $ik = $_GET['invite'];
-    $db = new DBC('whatsapp_v1_0');
+    $db = new DBC(CONN);
     try {
 		$info = $db->exec("SELECT id, username, dp, tel, country FROM visitors WHERE invitation_key = '$ik'");
         if($info->num_rows == 1){
         $info = $info->fetch_assoc();
-        $db2 = new DBC();
-        $country = $db2->exec("SELECT nicename FROM country WHERE iso = '" . $info['country'] . "'")->fetch_assoc()['nicename'];
+        $country = $db->exec("SELECT nicename FROM country WHERE iso = '" . $info['country'] . "'")->fetch_assoc()['nicename'];
         $description = ($info['username'] == 'Visitor' ? $info['tel'] : $info['username']) . ' from ' . $country . ' will like to test WhatsApp Clone with you';
         if(!empty($info['dp'])){
             $thumbnail = ROOT . '/visitors/' . $info['id'] . '/dp/' . $info['dp'];

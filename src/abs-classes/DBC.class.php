@@ -2,19 +2,20 @@
 <?php
 
 /**
- * 
+ *  
  */
 class MySQLException extends Exception{}
 class PreparedStatementException extends MySQLException{}
-class DBC extends PreparedStatementException{
-	protected $dbuser = 'root';
-	protected $host = 'localhost';
-	protected $password = '';
+class DBC extends PreparedStatementException{ 
 	protected $dbc;	
-function __construct($db = '247_dev'){
-	$this->dbc = new mysqli($this->host, $this->dbuser, $this->password);
-	$this->dbc->query("CREATE DATABASE IF NOT EXISTS $db");
-	$this->dbc = new mysqli($this->host, $this->dbuser, $this->password, $db);
+function __construct($CONN){
+	$host = $CONN['HOST'];
+	$dbuser = $CONN['DBUSER'];
+	$dbname = $CONN['DBNAME'];
+	$password = $CONN['PASSWORD'];
+	$this->dbc = new mysqli($host, $dbuser, $password);
+	$this->dbc->query("CREATE DATABASE IF NOT EXISTS $dbname");
+	$this->dbc = new mysqli($host, $dbuser, $password, $dbname);
 }
 function exec($query){
 	$sql = $this->dbc->query($query);
