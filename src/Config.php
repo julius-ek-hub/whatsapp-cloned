@@ -13,10 +13,15 @@ define('CONN', array(
     'PASSWORD' => ''
 ));
 
-
+/**
+ * After installing phpmailer, you have to edit this array to your email credentials.
+ * When you send an email from the client (JS), the `from` property should would only accept any of admin, info, no_rep .... 
+ * You can add more emails if you have, following the same order and then refer to it from the client side using the 
+ * main property and the rest will be automatically taken.
+ */
 define('MAILER', array(
     'admin' => array(
-        'name' => 'Admin',
+        'name' => 'WhatsApp Clone Admin',
         'addr' => 'username@youremailprovider.theirextension', //eg james@website.com
         'password' => 'password-to-this-email'
     ),
@@ -34,6 +39,7 @@ define('MAILER', array(
     'port' => 587 //mostly 587
     ));
 
+//This function returns the appropriate meta tags, cool when when you have multiple pages 
 function head_meta($d){
     $ds = $d['description'];
     $tn = $d['image'];
@@ -77,6 +83,7 @@ _END;
 return $data;
 }
 
+// Repeated links for multiple pages
 function head_urls($d){
     $ROOT = ROOT;
     $gcss = $d['global_css'] ? '<link rel="stylesheet" href="' . ROOT. '/css/global.css">' : '';
