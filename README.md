@@ -33,9 +33,9 @@ The Database enviroment would be dynamically created from your values here. Make
 - Edit the `MAILER` in [src/Config.php](https://github.com/julius-ek-hub/whatsapp-clone/blob/3687fbc7055834e6d6e0fe078915a50d244dd0e2/src/Config.php#L23 "MAILER") with your credentials. This is where you will be extracting your `from` addresses. When you send an email from the client (JS), the `from` property would only accept any of admin, info, no_rep .... You can add more emails if you have, following the same order and then refer to it from the client side using the main property and the rest will be automatically taken.
 - To send from a Gmail account, you need to take the following steps.
 
-  1. You have to change th security settings by going to [Google Account security settings.](https://myaccount.google.com/intro/security "Google Account security settings")
-  2. Make sure that 2-Step-Verification is disabled.
-  3. Turn ON the "Less Secure App" access or [click here](https://myaccount.google.com/intro/security "Turn ON Less Secure App"). Below is an example of Gmail configuration
+  1. You have to change the security settings by going to [Google Account security settings.](https://myaccount.google.com/intro/security "Google Account security settings")
+  2. Make sure that 2-Step-Verification is disabled or off.
+  3. Turn ON the "Less Secure App access" or [click here](https://myaccount.google.com/intro/security "Turn ON Less Secure App"). Below is an example of Gmail configuration
 
   ```php
   // Google's smtp sever address is smtp.gmail.com and the port is 587. This port may likely be the same for all smtp severs
@@ -71,12 +71,12 @@ The Database enviroment would be dynamically created from your values here. Make
    ></script>
    ```
 
-   - Be the first to register when the App is ready so as to have the `id` 0001 or by any means make sure as the owner, your `id` is 0001 because [automatic messages](https://github.com/julius-ek-hub/whatsapp-clone/blob/3687fbc7055834e6d6e0fe078915a50d244dd0e2/modules/gui.js#1600 "autoWelcomeMessage") would be sent to any new user whose `id` is not 0001
+   - Be the first to register when the App is ready so as to have the `id` 0001 or by any means make sure as the owner, your `id` is 0001 because [automatic messages](https://github.com/julius-ek-hub/whatsapp-clone/blob/3687fbc7055834e6d6e0fe078915a50d244dd0e2/modules/gui.js#L1600 "autoWelcomeMessage") would be sent to any new user whose `id` is not 0001
 
 6. If you have cloned this project out of the UAE or have a different time zone from the UAE then you may want to change `date_default_timezone_set('Asia/Dubai')` in [src/actions.php](https://github.com/julius-ek-hub/whatsapp-clone/blob/3687fbc7055834e6d6e0fe078915a50d244dd0e2/src/actions.php#L2 "Time zone") to the value of your time zone. This doesn't really matter just leave it if you don't know. Its main purpose is that at any point if I need to get `time()` (int), it should be the same for everyone.
-7. [Register for free](https://www.tenor.com "Tenor GIF") with tenor to get a free api key and then replace the api_key in [modules/serviceWorker.js searchGIF](https://github.com/julius-ek-hub/whatsapp-clone/blob/3687fbc7055834e6d6e0fe078915a50d244dd0e2/modules/serviceWorker.js#L843 "searchGIF") with the one you get from [tenor.com](https://www.tenor.com "Tenor GIF"). This is needed to be able to send GIFs
+7. [Register for free](https://www.tenor.com "Tenor GIF") with tenor to get a free api key and then replace the api_key in [modules/serviceWorker.js searchGIF](https://github.com/julius-ek-hub/whatsapp-clone/blob/3687fbc7055834e6d6e0fe078915a50d244dd0e2/modules/seviceWorker.js#L843 "searchGIF") with the one you get from [tenor.com](https://www.tenor.com "Tenor GIF"). This is needed to be able to send GIFs
 8. Change `receipients` value in [modules/gui.js Line 6281](https://github.com/julius-ek-hub/whatsapp-clone/blob/3687fbc7055834e6d6e0fe078915a50d244dd0e2/modules/gui.js#L6281 "searchGIF") to your preferred email address. This could be any address. If you don't want to receive email when a user reports someone, then you can change this function to send it to your database instead for later review.
-9. Change the value of `mainRoot` in [modules/app.js Line 15](https://github.com/julius-ek-hub/whatsapp-clone/blob/b6a90a955782b8ea92fb90b4ae74ccc7f145b587/modules/app.js#L15 "mainRoot") to match the name of the the root directory parenting the entire project.
+9. Change the value of `mainRoot` in [modules/app.js Line 15](https://github.com/julius-ek-hub/whatsapp-clone/blob/b6a90a955782b8ea92fb90b4ae74ccc7f145b587/app.js#L15 "mainRoot") to match the name of the the root directory parenting the entire project.
 
 ## Gallery
 
