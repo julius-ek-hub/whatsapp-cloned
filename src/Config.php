@@ -9,7 +9,7 @@ define('KEY_WORDS', 'codes, coding, projects, blogs, programming, js, javascript
 //Database connection settings
 define('CONN', array(
     'HOST' => 'localhost',
-    'DBNAME' => 'whatsapp_clone',
+    'DBNAME' => 'whatsapp_clone_db',
     'DBUSER' => 'root',
     'PASSWORD' => ''
 ));
