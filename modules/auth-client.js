@@ -155,7 +155,7 @@ export function prepareUtilities(mainRoot) {
 /* Check if user is still logged in with cookie */
 
 export function loggedIn() {
-    return helper.cookie('wc_v1_0_user');
+    return helper.cookie('uid');
 }
 
 /**

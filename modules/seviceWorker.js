@@ -161,7 +161,6 @@ export function getChats(id) {
         helper.Request('src/actions.php', {
             chat_ids: id
         }).then(response => {
-
             res(JSON.parse(response))
         }).catch(err => {
             console.log(err)

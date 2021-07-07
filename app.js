@@ -12,7 +12,7 @@ $(document).ready(() => {
 
     let w = new ui.WhatsApp();
     w.init();
-    w.addProperties({ mainRoot: 'http://localhost/whatsapp-clone/' });
+    w.addProperties({ mainRoot: 'http://localhost/whatsapp-clone-dist/' });
     w.addProperties({ root: w.mainRoot });
     let welcome = w.welcomeScreen();
     welcome.launch();

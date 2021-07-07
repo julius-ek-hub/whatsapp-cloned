@@ -1284,7 +1284,7 @@ WhatsApp.prototype.prepareChat = function(chat) {
         lastReceipt = '<span class="receipt' + r.receiptCss + '">' + r.receipt + '</span> ';
     }
     let ld = info.last_message.dateSent;
-    let lastM = info.last_message.message.trim();
+    let lastM = info.last_message.message.trim().unescape();
     if (lastM == '') {
         let d = ac.describeFile(JSON.parse(info.last_message.fileInfo));
         lastM = d.icon + ' ' + d.description;
@@ -1300,7 +1300,7 @@ WhatsApp.prototype.prepareChat = function(chat) {
         name = cn;
         removed = 0;
     } else {
-        dp = info.dp.trim() == '' ? this.defaultDp : ('visitors/' + info.id + '/dp/' + info.dp);
+        dp = this.dp(info.dp, info.id)
         if (cn == 0) {
             name = info.tel;
         } else {
@@ -1315,7 +1315,7 @@ WhatsApp.prototype.prepareChat = function(chat) {
         contactId: info.id,
         dp: dp,
         name: name,
-        lastMessage: lastReceipt + '<span class="' + lm_receipt + '">' + sname + ac.decorateMessage(helper.reduce(lastM, 60).unescape()) + '</span>',
+        lastMessage: lastReceipt + '<span class="' + lm_receipt + '">' + sname + ac.decorateMessage(helper.reduce(lastM, 60)) + '</span>',
         unread: info.unread,
         removed: removed,
         lastDate: (!['0', 0].includes(info.blocked)) ? '' : (ld == 'Recently' ? 'Recently' : new Date(info.last_message.dateSent).nice_one())
@@ -1944,7 +1944,7 @@ WhatsApp.prototype.buildMedia = function(details) {
     let url = f.url;
     let needFetch = true;
     if (!f.url.includes('blob:http://') && f.type != 'gif') {
-        url = 'visitors/' + details.senderInfo.id + '/' + ac.folder(f.type) + '/' + f.url;
+        url = `${this.root}visitors/${details.senderInfo.id}/${ac.folder(f.type)}/${f.url}`;
     }
     if (f.url.includes('blob:http://')) {
         needFetch = false;
@@ -3695,7 +3695,7 @@ WhatsApp.prototype.forwardMessages = function() {
 }
 WhatsApp.prototype.copyMessage = function(details) {
         let fi = details.fileInfo;
-        let text = typeof details == 'object' ? (details.message == '' ? fi.type == 'gif' ? fi.url : `${this.mainRoot}file-viewer?f=${`${this.mainRoot}projects/whatsapp-clone/app/visitors/${details.senderId}/${fi.type == 'picture' ? 'Pictures' : 'Recordings'}/${fi.url}`.to_b64()}` : details.message) : details;
+        let text = typeof details == 'object' ? (details.message == '' ? fi.type == 'gif' ? fi.url : `${this.mainRoot}file-viewer?f=${`${this.root}/visitors/${details.senderId}/${fi.type == 'picture' ? 'Pictures' : 'Recordings'}/${fi.url}`.to_b64()}` : details.message) : details;
     helper.copy(text.unescape());
     this.bottomInfo('Copied to clipboard...', 'success');
 }
@@ -6278,9 +6278,9 @@ WhatsApp.prototype.reportChat = function(chat, from, about) {
                 body: `<div><b>TYPE: ${resp.select} && USER_ID: ${from} && CHAT: ${chat} && PROJECT: whatsapp-clone</b></div> ${resp.textarea} <h4>Links: </h4> ${links}`,
                 main: `A report`,
                 from: 'no_rep',
-                receipients: ['admin@easyemployment.org']
+                receipients: ['info@247-dev.com']
             }).then(() => {
-                self.Alert('Thanks for the info');
+                self.Alert('Thanks for the info, we\'ll handle it');
             }).catch((err) => {console.log(err)})
         }
     })

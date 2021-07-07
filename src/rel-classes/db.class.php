@@ -365,10 +365,13 @@ function group_delete($mid, $senderId){
                     blocked varchar(10) DEFAULT '0',
                     muted varchar(10) DEFAULT '0',
                     custom_name text DEFAULT '0',
-                    group_ boolean DEFAULT 0,
+                    _group boolean DEFAULT 0,
                     PRIMARY KEY(sn)
                 )");
-            break; 
+
+            $this->exec("INSERT INTO all_chats(chat_id, last_updated, deleted, blocked, muted, custom_name, _group) VALUES('group_0000', 'time()', '0', '0', '0', 'Talk with everyone', 1)");
+
+            break;
             case 'calls':
                 $this->exec("CREATE TABLE calls(
                     sn int(10) NOT NULL AUTO_INCREMENT,

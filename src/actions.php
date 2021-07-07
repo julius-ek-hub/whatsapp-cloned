@@ -94,7 +94,7 @@ elseif (isset($_POST['login'])){
 		$rw = $res->fetch_assoc();
 		$id =  $rw['id'];
 		if($rw['removed'] == '0' && password_verify($details->pin, $rw['pin'])){
-		create_cookie(array('wc_v1_0_user' => $id));
+		create_cookie(array('uid' => $id));
 		echo 1;
 	}else{
 		echo 0;
@@ -105,7 +105,7 @@ elseif (isset($_POST['login'])){
 }
 elseif(isset($_POST['logout'])){
 	destroy_cookie(array(
-		'wc_v1_0_user' => $_POST['logout'],
+		'uid' => $_POST['logout'],
 		'informed_ed' => false,
 		'em_1'  => false,
 		'em_2' => false
@@ -187,13 +187,21 @@ elseif(isset($_POST['new_visitor']) && isset($_POST['invitation_code'])){
 	$details->id = $details->id != null ? $details->id :  make_longer_id_from($db->get_last_id('visitors') + 1, 4);
 	$details->invitation_key = md5($details->id . $details->pin);
 	$db->add_visitor($details);
-	create_cookie(array('wc_v1_0_user' => $details->id));
+	create_cookie(array('uid' => $details->id));
 	
 	$ik = $_POST['invitation_code'];
 	if($ik != 0){
 			$db->create_chat($ik, $details->id);	
 	}
-	$db->add_chat('chat_0001x' . $details->id);
+	try {
+		$db->create_table('all_chats', 'all_chats');
+	} catch (\Throwable $th) {
+		// all_chats already created
+	}
+
+	if($details->id != '0001'){
+		$db->add_chat('chat_0001x' . $details->id);
+	}
 	echo json_encode($details);
 }
 elseif(isset($_POST['new_message'])){
@@ -593,7 +601,12 @@ elseif (isset($_POST['delete_account'])) {
    	}
   }
   $db->exec("UPDATE visitors SET removed = 1, email = '', dp = '', mail_confirmation_code = '' WHERE id = '$id'");
-  destroy_cookie(array('wc_v1_0_user' => $id));
+  	destroy_cookie(array(
+		'uid' => $id,
+		'informed_ed' => false,
+		'em_1'  => false,
+		'em_2' => false
+	));
   echo 1;
 }
 
