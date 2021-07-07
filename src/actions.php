@@ -6,8 +6,7 @@ require 'Config.php';
 require 'functions.php';
 require 'abs-classes/DBC.class.php';
 require 'abs-classes/File.class.php';
-require 'rel-classes/db.class.php';
-require 'rel-classes/file.class.php';
+require 'db.class.php';
 $db = new WC(CONN);
 if(isset($_GET['countries'])){
 	$result = array();
