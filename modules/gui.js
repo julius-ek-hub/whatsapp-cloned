@@ -3971,7 +3971,7 @@ WhatsApp.prototype.videoCall = function(properties) {
     let s = this.settings;
     let cid = properties.chatId;
     let chat = this.chats[cid];
-    let name = properties.name;
+    let name = this.username(properties.id, properties.name);
     chat.info.custom_name == 0 ? chat.info.tel : chat.info.custom_name;
 
     if (ac.checkBlock(s, cid)) {
@@ -4173,8 +4173,8 @@ WhatsApp.prototype.audioCall = function(properties) {
     this.state.calling = true;
     let self = this;
 
-
-    let name = properties.name;
+    
+    let name = this.username(properties.id, properties.name);
 
     let w = new helper.Modal();
     let call_status = helper.make_el('div').class('call-status').html('Connecting...');
@@ -4333,7 +4333,7 @@ WhatsApp.prototype.incomingCall = function(properties) {
         chat = this.chats['chat_' + properties.id + 'x' + s.id];
     }
     let cid = chat.info.chat_id;
-    let name = chat.info.custom_name == 0 ? chat.info.tel : chat.info.custom_name;
+    let name = this.username(properties.id, chat.info.tel);
     let w = new helper.Modal();
     let head = helper.make_el('div').style({
         background: 'rgb(18, 140, 126)',
