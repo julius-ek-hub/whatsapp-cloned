@@ -664,7 +664,7 @@ WhatsApp.prototype.Authentication = function() {
                             </button>
                             <div class = "dropdown-menu">
                             <a href="${self.mainRoot}" class = "dropdown-item">Return to main Home page</a>
-                             <a href="${self.root.split('/app')[0]}" class = "dropdown-item">View Project features</a>
+                             <a href="https://www.247-dev.com/projects/whatsapp-clone" class = "dropdown-item">View Project features</a>
                             </div>
                             </div>
 
