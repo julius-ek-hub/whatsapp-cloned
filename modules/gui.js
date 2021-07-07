@@ -3636,7 +3636,7 @@ WhatsApp.prototype.forwardMessages = function() {
         sel.options.push({
             disabled: disabledInfo,
             id: chat,
-            value: `${disabledInfo} <img src= "${dp}" class="dp">${name}<span class="text-secondary font-weight-lighter font-size-sm" style="float:right">~ ${gp}</span>`
+            value: `${disabledInfo} <img src= "${dp}" class="dp"> ${name}<span class="text-secondary font-weight-lighter font-size-sm" style="float:right">~ ${gp}</span>`
         });
     });
 
