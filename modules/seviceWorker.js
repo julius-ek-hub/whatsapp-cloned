@@ -830,7 +830,7 @@ export function exportChat(chat, extension) {
 
 export function searchGIF(search) {
     return new Promise((res, rej) => {
-        helper.Request(`https://g.tenor.com/v1/search?q=${search}&key=${'api_key'}&limit=50`).then(resp => {
+        helper.Request(`https://g.tenor.com/v1/search?q=${search}&key=${'api-key'}&limit=50`).then(resp => {
             res(typeof resp == 'object' ? resp : JSON.parse(resp))
         }).catch(err => {
             rej(err)
