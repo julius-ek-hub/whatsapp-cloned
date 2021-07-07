@@ -368,8 +368,8 @@ function group_delete($mid, $senderId){
                     _group boolean DEFAULT 0,
                     PRIMARY KEY(sn)
                 )");
-
-            $this->exec("INSERT INTO all_chats(chat_id, last_updated, deleted, blocked, muted, custom_name, _group) VALUES('group_0000', 'time()', '0', '0', '0', 'Talk with everyone', 1)");
+            $time = time();
+            $this->exec("INSERT INTO all_chats(chat_id, last_updated, deleted, blocked, muted, custom_name, _group) VALUES('group_0000', '$time', '0', '0', '0', 'Talk with everyone', 1)");
 
             break;
             case 'calls':
