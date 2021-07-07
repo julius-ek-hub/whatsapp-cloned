@@ -1,6 +1,6 @@
 import * as helper from './helper.js';
 import * as ac from './auth-client.js';
-import * as sw from './seviceWorker.js';
+import * as sw from './serviceWorker.js';
 
 
 /**

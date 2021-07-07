@@ -1,5 +1,5 @@
 import * as helper from './helper.js';
-import * as sw from './seviceWorker.js';
+import * as sw from './serviceWorker.js';
 window.streaming = [];
 /**
  * Validate telephone numbers during signup

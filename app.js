@@ -5,7 +5,7 @@
  */
 import * as ui from './modules/gui.js';
 import * as helper from './modules/helper.js';
-import * as sw from './modules/seviceWorker.js';
+import * as sw from './modules/serviceWorker.js';
 import * as ac from './modules/auth-client.js';
 
 $(document).ready(() => {
