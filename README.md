@@ -30,7 +30,35 @@ The Database enviroment would be dynamically created from your values here. Make
 
 - First if you don't have a composer installed in your machine, you need to download it [here](https://getcomposer.org/Composer-Setup.exe "Get composer") and install then...
 - Open your command prompt/command line as administrator then change directory upto ./composer folder in the project then type `composer require phpmailer/phpmailer` to install phpmailer in the composer directory. Having issues? [Read this](https://github.com/PHPMailer/PHPMailer "phpmailer") or [Contact Me](https://github.com/PHPMailer/PHPMailer)
-- Edit the `MAILER` in [src/Config.php](https://github.com/julius-ek-hub/whatsapp-clone/blob/3687fbc7055834e6d6e0fe078915a50d244dd0e2/src/Config.php#L23 "MAILER") with your credentials. This is where you will be extracting your `from` addresses.
+- Edit the `MAILER` in [src/Config.php](https://github.com/julius-ek-hub/whatsapp-clone/blob/3687fbc7055834e6d6e0fe078915a50d244dd0e2/src/Config.php#L23 "MAILER") with your credentials. This is where you will be extracting your `from` addresses. When you send an email from the client (JS), the `from` property would only accept any of admin, info, no_rep .... You can add more emails if you have, following the same order and then refer to it from the client side using the main property and the rest will be automatically taken.
+- To send from a Gmail account, you need to take the following steps.
+
+  1. You have to change th security settings by going to [Google Account security settings.](https://myaccount.google.com/intro/security "Google Account security settings")
+  2. Make sure that 2-Step-Verification is disabled.
+  3. Turn ON the "Less Secure App" access or [click here](https://myaccount.google.com/intro/security "Turn ON Less Secure App"). Below is an example of Gmail configuration
+
+  ```php
+  // Google's smtp sever address is smtp.gmail.com and the port is 587. This port may likely be the same for all smtp severs
+
+  define('MAILER', array(
+    'admin' => array(
+        'name' => 'WhatsApp Clone Admin',
+        'addr' => 'johndoe@gmail.com',
+        'password' => 'mygmailpassword'
+    ),
+
+    // Add as many gmail addresses as you want to use
+
+    'host' => 'smtp.gmail.com',
+    'port' => 587
+    ));
+  ```
+
+  The above configuration will only work for Google mails. That is, you can send _from_ only gmail but can send _to_ any email address
+
+- To send from other smtp servers, make sure to find the smtp server address, the smtp port which would likely be 587 and then know your email password. Then replace with the configurations above. You can find all that in your account with the domain name provider
+
+[Learm more about SMTP](https://www.pepipost.com/blog/what-is-smtp)
 
 5. If you want to host this project on a life server, you need to have your own copy of fontawesome link. If you don't have a copy, then [register with Font Awesome](https://fontawesome.com/start "font awesome") by providing only email to acquire an absolutely free link for the project. Replace your link with [this one](https://github.com/julius-ek-hub/whatsapp-clone/blob/b6a90a955782b8ea92fb90b4ae74ccc7f145b587/src/Config.php#L92 "font awesome"). Make sure its Font Awesome 5. Your link would look like below
 
