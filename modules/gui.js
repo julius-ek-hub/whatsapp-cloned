@@ -3625,16 +3625,18 @@ WhatsApp.prototype.forwardMessages = function() {
     }
     myChats.forEach(chat => {
         let info = this.chats[chat].info;
-        let cn = info.custom_name;
-        let gp = info.group == 1 ? 'Group' : 'DM';
-        let name = info.group == 1 ? cn : cn == 0 ? info.tel : cn;
+        let name = info.custom_name
+        let gp = 'Group';
+        if (info.group == 0) {
+            gp = "DM";
+            name = this.username(info.id, info.tel);
+        }
         let disabledInfo = ['0', 0, s.id].includes(info.blocked) ? '' : '<i class="fa fa-ban"></i> ';
         let dp = info.group == 1 ? this.defaultDp : this.dp(info.dp, info.id);
         sel.options.push({
             disabled: disabledInfo,
             id: chat,
-            value: (disabledInfo + '<img src= ' + dp + ' class="dp"> ' +
-                name + '<span class="text-secondary font-weight-lighter font-size-sm" style="float:right">~ ' + gp + '</span>')
+            value: `${disabledInfo} <img src= "${dp}" class="dp">${name}<span class="text-secondary font-weight-lighter font-size-sm" style="float:right">~ ${gp}</span>`
         });
     });
 
