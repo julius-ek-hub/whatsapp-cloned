@@ -60,16 +60,24 @@ The Database enviroment would be dynamically created from your values here. Make
 
 [Learm more about SMTP](https://www.pepipost.com/blog/what-is-smtp)
 
-5. If you want to host this project on a life server, you need to have your own copy of fontawesome link. If you don't have a copy, then [register with Font Awesome](https://fontawesome.com/start "font awesome") by providing only email to acquire an absolutely free link for the project. Replace your link with [this one](https://github.com/julius-ek-hub/whatsapp-clone/blob/b6a90a955782b8ea92fb90b4ae74ccc7f145b587/src/Config.php#L92 "font awesome"). Make sure its Font Awesome 5. Your link would look like below
+5. If you want to host this project on a life server, then
 
-```html
-<script
-  src="https://kit.fontawesome.com/yourcode.js"
-  crossorigin="anonymous"
-></script>
-```
+   - You need to have your own copy of fontawesome link. If you don't have a copy, then [register with Font Awesome](https://fontawesome.com/start "font awesome") by providing only email to acquire an absolutely free link for the project. Replace your link with [this one](https://github.com/julius-ek-hub/whatsapp-clone/blob/b6a90a955782b8ea92fb90b4ae74ccc7f145b587/src/Config.php#L92 "font awesome"). Make sure its Font Awesome 5. Your link would look like below
+
+   ```html
+   <script
+     src="https://kit.fontawesome.com/yourcode.js"
+     crossorigin="anonymous"
+   ></script>
+   ```
+
+   - Be the first to register when the App is ready so as to have the `id` 0001 or by any means make sure as the owner, your `id` is 0001 because [automatic messages](https://github.com/julius-ek-hub/whatsapp-clone/blob/3687fbc7055834e6d6e0fe078915a50d244dd0e2/modules/gui.js#1600 "autoWelcomeMessage") would be sent to any new user whose `id` is not 0001
 
 6. If you have cloned this project out of the UAE or have a different time zone from the UAE then you may want to change `date_default_timezone_set('Asia/Dubai')` in [src/actions.php](https://github.com/julius-ek-hub/whatsapp-clone/blob/3687fbc7055834e6d6e0fe078915a50d244dd0e2/src/actions.php#L2 "Time zone") to the value of your time zone. This doesn't really matter just leave it if you don't know. Its main purpose is that at any point if I need to get `time()` (int), it should be the same for everyone.
 7. [Register for free](https://www.tenor.com "Tenor GIF") with tenor to get a free api key and then replace the api_key in [modules/serviceWorker.js searchGIF](https://github.com/julius-ek-hub/whatsapp-clone/blob/3687fbc7055834e6d6e0fe078915a50d244dd0e2/modules/serviceWorker.js#L843 "searchGIF") with the one you get from [tenor.com](https://www.tenor.com "Tenor GIF"). This is needed to be able to send GIFs
 8. Change `receipients` value in [modules/gui.js Line 6281](https://github.com/julius-ek-hub/whatsapp-clone/blob/3687fbc7055834e6d6e0fe078915a50d244dd0e2/modules/gui.js#L6281 "searchGIF") to your preferred email address. This could be any address. If you don't want to receive email when a user reports someone, then you can change this function to send it to your database instead for later review.
 9. Change the value of `mainRoot` in [modules/app.js Line 15](https://github.com/julius-ek-hub/whatsapp-clone/blob/b6a90a955782b8ea92fb90b4ae74ccc7f145b587/modules/app.js#L15 "mainRoot") to match the name of the the root directory parenting the entire project.
+
+## Gallery
+
+Images coming soon
