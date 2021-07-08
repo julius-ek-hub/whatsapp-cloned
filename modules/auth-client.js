@@ -147,6 +147,8 @@ export function prepareUtilities(mainRoot) {
     let sounds = [].slice.call(document.getElementsByClassName('sound'));
     return Promise.all(sounds.map(function(el) {
         return new Promise(function(resolve, reject) {
+            delayance.html('delay');
+            setTimeout(resolve, 5000);
             el.addEventListener('canplaythrough', resolve);
         });
     }));
@@ -715,7 +717,11 @@ export function checkPermission(obj) {
                     rej()
             })
         } catch (err) {
-            rej();
+            let mozPerm = helper.cookie(obj.name == 'microphone' ? 'mozMicPermission' : 'mozCamPermission');
+            if (mozPerm)
+                res(mozPerm)
+            else
+                rej()
         }
     })
 }

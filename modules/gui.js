@@ -1284,7 +1284,7 @@ WhatsApp.prototype.prepareChat = function(chat) {
         lastReceipt = '<span class="receipt' + r.receiptCss + '">' + r.receipt + '</span> ';
     }
     let ld = info.last_message.dateSent;
-    let lastM = info.last_message.message.trim().unescape();
+    let lastM = info.last_message.message.trim().split('\n').join(' ').unescape();
     if (lastM == '') {
         let d = ac.describeFile(JSON.parse(info.last_message.fileInfo));
         lastM = d.icon + ' ' + d.description;
@@ -1952,12 +1952,13 @@ WhatsApp.prototype.buildMedia = function(details) {
     let self = this;
     let ret;
     let file_state = { deleted: true, fetching: true };
-    let el;
+    let audio;
+
     if (f.type == 'record') {
-        el = helper.make_el('audio').attr({
-            hidden: 'true'
-        }).self;
-        el.currentTime = 0.5;
+        audio = new Audio(url);
+        audio.hidden = true;
+        audio.currentTime = 0.5;
+        audio.controls = true;
         ret = helper.make_el('table').class('audio-file').addChild(helper.make_el('tbody')
             .addChild(helper.make_el('tr').addChild([
                 helper.make_el('td').style({ position: 'relative' }).addChild([
@@ -1991,7 +1992,7 @@ WhatsApp.prototype.buildMedia = function(details) {
                             self.bottomInfo('Can\'t play audio, recording is ongoing...', 'error');
                             return;
                         }
-                        ac.play(e.target.tagName == 'BUTTON' ? e.target : helper._(e.target).parent().self, el, f, this);
+                        ac.play(e.target.tagName == 'BUTTON' ? e.target : helper._(e.target).parent().self, audio, f, this);
                     }
                 }).html('<i class = "fa fa-play"></i>').self).self,
                 helper.make_el('td').style({ position: 'relative', width: '200px' }).addChild([
@@ -2002,7 +2003,7 @@ WhatsApp.prototype.buildMedia = function(details) {
                         max: '100',
                         value: '0'
                     }).self,
-                    el,
+                    audio,
                     helper.make_el('span').attr({
                         class: 'text-muted',
                         style: {
@@ -2035,7 +2036,7 @@ WhatsApp.prototype.buildMedia = function(details) {
             file_state.deleted = false;
             file_state.fetching = false;
             if (f.type == 'record')
-                el.src = b;
+                audio.src = b;
             else
                 ret.attr({ alt: 'Message File', src: b })
         }).catch(err => {
@@ -2045,7 +2046,7 @@ WhatsApp.prototype.buildMedia = function(details) {
         })
     } else {
         if (f.type == 'record') {
-            el.src = url;
+            audio.src = url;
         } else {
             ret.attr({ alt: 'Message File', src: url })
         }
@@ -2487,7 +2488,7 @@ WhatsApp.prototype.highlighChatHead = function(details, new_) {
         receipt = '<span class="receipt' + r.receiptCss + '">' + r.receipt + '</span> ';
         lm_receipt = 'from-me'
     }
-    let lastM = ac.decorateMessage(details.message.trim().unescape());
+    let lastM = ac.decorateMessage(details.message.trim().split('\n').join(' ').unescape());
     if (lastM == '') {
         let d = ac.describeFile(details.fileInfo);
         lastM = d.icon + ' ' + d.description;
@@ -3609,7 +3610,7 @@ WhatsApp.prototype.forwardMessages = function() {
                 background: 'initial'
             })
         } else {
-            if (sel.selected.length > 1) {
+            if (sel.selected.length > 9) {
                 self.bottomInfo('Can only forward to maximum 10 chats at a time', 'error');
             } else {
                 sel.selected.push(chosen);
@@ -4756,6 +4757,7 @@ WhatsApp.prototype.welcomeScreen = function() {
         class: 'wc-wlcm-up font-weight-light'
     }).html('WhatsApp Clone').self;
 
+    let delayance = helper.make_el('div');
     let middle = helper.make_el('div').attr({
         class: 'wc-wlcm-middle'
     }).addChild([
@@ -4766,7 +4768,8 @@ WhatsApp.prototype.welcomeScreen = function() {
         }).self,
         helper.make_el('div').attr({
             class: 'wc-wlcm-loading'
-        }).html('Welcome... <i class="fa fa-spinner fa-pulse"></i>').self
+        }).html('Welcome... <i class="fa fa-spinner fa-pulse"></i>').self,
+        delayance.self
     ]).self
 
     let bottom = helper.make_el('div').attr({
@@ -4793,7 +4796,8 @@ WhatsApp.prototype.welcomeScreen = function() {
             } else {
                 wn.close()
             }
-        }
+        },
+        delayance: delayance
     }
 }
 
