@@ -66,11 +66,11 @@ $(document).ready(() => {
                 })
             } else {
                 welcome.destroy(1000);
-                let au = w.Authentication(),
-                    rn = au.requestNumber(),
-                    co = au.confirmOTP(),
-                    sd = au.setDp(),
-                    rl = au.requestLogin();
+                let v = w.Verify(),
+                    rn = v.requestNumber(),
+                    co = v.confirmOTP(),
+                    sd = v.setDp(),
+                    rl = v.requestLogin();
 
                 //Request user number first
                 rn.request().then(resp => {
