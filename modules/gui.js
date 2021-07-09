@@ -2040,7 +2040,7 @@ WhatsApp.prototype.buildMedia = function(details) {
             else
                 ret.attr({ alt: 'Message File', src: b })
         }).catch(err => {
-            ret.attr({ alt: 'Failed to fetch' })
+            ret.attr({ alt: ' Failed to fetch file' })
             file_state.deleted = true;
             file_state.fetching = false;
         })
