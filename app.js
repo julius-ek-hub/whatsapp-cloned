@@ -3,10 +3,10 @@
  * This Project is only for educational purpose, you shall not use it against any WhatsApp law,
  * Free to use and edit.
  */
-import * as ui from './modules/gui.js';
+import * as ui from './modules/all-modules.js';
 import * as helper from './modules/helper.js';
 import * as sw from './modules/serviceWorker.js';
-import * as ac from './modules/auth-client.js';
+import * as ac from './modules/actions-proper.js';
 
 $(document).ready(() => {
 
