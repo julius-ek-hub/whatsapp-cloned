@@ -6,21 +6,21 @@ import * as chat from "./chat.js";
 import * as pa from "./prepare-app.js";
 import * as actions from "./general-actions.js";
 import * as ma from "./message-actions.js";
-import * as op from "./profile.js";
+import * as p from "./profile.js";
 import * as du from "./db-updates.js";
 import * as calls from "./calls.js";
 import * as announce from "./announcments.js";
 
 let WhatsApp = function() {
-    this.addProperties = function(args) {
-        for (let i in args) {
-            this[i] = args[i];
+    this.addProperties = function(arg) {
+        for (let i in arg) {
+            this[i] = arg[i];
         }
     }
 }
 
 
-let modules = [vf, mm, mess, cb, chat, pa, actions, ma, op, du, calls, announce];
+let modules = [vf, mm, mess, cb, chat, pa, actions, ma, p, du, calls, announce];
 
 modules.forEach(module_ => {
 
