@@ -94,7 +94,7 @@ export function verifyUser(btn, info) {
  * Check if the sound system / sound effects is ready
  */
 
-export function prepareUtilities(mainRoot) {
+export function prepareUtilities(mainRoot, delayance) {
     helper._(document.body).addChild([
         helper.make_el('audio').attr({
             id: 'message-sent-sound',
