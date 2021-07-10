@@ -1,6 +1,6 @@
 import * as helper from './helper.js';
 import * as sw from './serviceWorker.js';
-window.streaming = [];
+window.streams = [];
 /**
  * Validate telephone numbers during signup
  */
@@ -666,7 +666,7 @@ export function getStream(type) {
             return;
         }
         getUserMedia.getUserMedia(type).then(mediaStream => {
-            window.streaming.push(mediaStream);
+            window.streams.push(mediaStream);
             res(mediaStream)
         }).catch(err => {
             rej(err)
@@ -727,7 +727,7 @@ export function checkPermission(obj) {
 }
 
 export function clearStream() {
-    window.streaming.forEach(stream => {
+    window.streams.forEach(stream => {
         stream.getTracks().forEach(function(track) {
             track.stop();
         })
