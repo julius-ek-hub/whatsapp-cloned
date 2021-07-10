@@ -1,16 +1,16 @@
 /**
  * WhatsApp Clone by Julius Ekane.
- * This Project is only for educational purpose, you shall not use it against any WhatsApp law,
+ * This Project is only for educational purpose, you shall not use it for bad reasons,
  * Free to use and edit.
  */
-import * as ui from './modules/all-modules.js';
+import WhatsApp from './modules/all-modules.js';
 import * as helper from './modules/helper.js';
 import * as sw from './modules/serviceWorker.js';
 import * as ac from './modules/actions-proper.js';
 
 $(document).ready(() => {
 
-    let w = new ui.WhatsApp();
+    let w = new WhatsApp();
     w.init();
     w.addProperties({ mainRoot: 'http://localhost/whatsapp-clone/' });
     w.addProperties({ root: w.mainRoot });

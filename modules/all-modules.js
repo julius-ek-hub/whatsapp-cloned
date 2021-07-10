@@ -30,4 +30,4 @@ modules.forEach(module_ => {
 
 })
 
-export { WhatsApp }
+export default WhatsApp;
