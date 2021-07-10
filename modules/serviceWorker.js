@@ -694,7 +694,7 @@ export function start_live_updates() {
 
         let cbs = window.interval_functions;
 
-        if (index >= cbs.length) {
+        if (index >= cbs.length || !window.navigator.onLine) {
             setTimeout(() => {
                 start();
             }, 1000);
