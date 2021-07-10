@@ -3,21 +3,25 @@
  * This Project is only for educational purpose, you shall not use it for bad reasons,
  * Free to use and edit.
  */
-import WhatsApp from './modules/all-modules.js';
-import * as helper from './modules/helper.js';
-import * as sw from './modules/serviceWorker.js';
-import * as ac from './modules/actions-proper.js';
+import WhatsAppClone from './modules/all-modules.js';
+import { _ } from './modules/helper.js';
+import {
+    getAllCountries,
+    getUser,
+    add_visitor
+} from './modules/serviceWorker.js';
+import { prepareUtilities, loggedIn } from './modules/actions-proper.js';
 
 $(document).ready(() => {
 
-    let w = new WhatsApp();
+    let w = new WhatsAppClone();
     w.init();
     w.addProperties({ mainRoot: 'http://localhost/whatsapp-clone/' });
     w.addProperties({ root: w.mainRoot });
     let welcome = w.welcomeScreen();
     welcome.launch();
-    sw.getAllCountries().then(resp => {
-        ac.prepareUtilities(w.mainRoot, welcome.delayance).finally(() => {
+    getAllCountries().then(resp => {
+        prepareUtilities(w.mainRoot, welcome.delayance).finally(() => {
 
             /**
              * After loading all countries and sound effects, we are ready to.
@@ -41,11 +45,11 @@ $(document).ready(() => {
                     }
                 },
                 sounds: {
-                    receivedIn: helper._('#message-received-sound').self,
-                    receivedOut: helper._('#message-alert').self,
-                    sent: helper._('#message-sent-sound').self,
-                    incomingCall: helper._('#incoming-call').self,
-                    callerTune: helper._('#caller-tune').self
+                    receivedIn: _('#message-received-sound').self,
+                    receivedOut: _('#message-alert').self,
+                    sent: _('#message-sent-sound').self,
+                    incomingCall: _('#incoming-call').self,
+                    callerTune: _('#caller-tune').self
                 },
                 colors: ['#eee45f', '#cccd45', '#bb34dc', '#beed34', '#bbbced', '#34ddea', '#4dddaa', '#bbbccc', '#005f6a', '#9e0018', '#fce']
 
@@ -55,8 +59,8 @@ $(document).ready(() => {
              * We check if there is an existing user for this browser
              */
 
-            if (ac.loggedIn()) {
-                sw.getUser(ac.loggedIn()).then(resp => {
+            if (loggedIn()) {
+                getUser(loggedIn()).then(resp => {
                     w.setEnvironment(resp, welcome);
                 }).catch(() => {
                     //Probably there are some browser storage issues
@@ -87,7 +91,7 @@ $(document).ready(() => {
                                 let info = resp.info;
                                 sd.destroy();
 
-                                sw.add_visitor(info).then(resp => {
+                                add_visitor(info).then(resp => {
                                     window.location.reload();
                                 })
 

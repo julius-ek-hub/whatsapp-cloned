@@ -11,7 +11,7 @@ import * as du from "./db-updates.js";
 import * as calls from "./calls.js";
 import * as announce from "./announcments.js";
 
-let WhatsApp = function() {
+let WhatsAppClone = function() {
     this.addProperties = function(arg) {
         for (let i in arg) {
             this[i] = arg[i];
@@ -25,9 +25,9 @@ let modules = [vf, mm, mess, cb, chat, pa, actions, ma, p, du, calls, announce];
 modules.forEach(module_ => {
 
     for (let method in module_) {
-        WhatsApp.prototype[method.split('').removeIf(char => { return method.indexOf(char) == (method.length - 1) && char == '_' }).join('')] = module_[method];
+        WhatsAppClone.prototype[method.split('').removeIf(char => { return method.indexOf(char) == (method.length - 1) && char == '_' }).join('')] = module_[method];
     }
 
 })
 
-export default WhatsApp;
+export default WhatsAppClone;
