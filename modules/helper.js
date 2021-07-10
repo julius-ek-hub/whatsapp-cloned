@@ -1341,11 +1341,10 @@ Modal.prototype.expandElement = function(el, ops = { onopen: () => {}, onclose: 
             top: '0'
         })
         let closeBtn = make_el('button');
-        closeBtn.class('text-danger pt-1 rounded-circle').attr({
+        closeBtn.class('text-danger').attr({
             style: {
                 float: 'right',
                 border: 'none',
-                background: 'white',
                 margin: '15px 30px',
                 transition: '100ms transform ease-in-out'
             },
@@ -1353,7 +1352,7 @@ Modal.prototype.expandElement = function(el, ops = { onopen: () => {}, onclose: 
             onclick: () => { self.close() },
             onmouseenter: () => { closeBtn.style({ transform: 'scale(1.2)' }) },
             onmouseleave: () => { closeBtn.style({ transform: 'scale(1)' }) }
-        }).html('<span class="material-icons-outlined font-weight-bold" style = "font-size:2em">close</span>');
+        }).html('<span class="material-icons-outlined font-weight-bold" style = "font-size:2.5em">close</span>');
         head.addChild(closeBtn.self);
         self.add_content(head.self);
         self.add_content(el.self);
