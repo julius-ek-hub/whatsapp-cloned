@@ -194,7 +194,7 @@ elseif(isset($_POST['new_visitor']) && isset($_POST['invitation_code'])){
 	}
 	try {
 		$db->create_table('all_chats', 'all_chats');
-	} catch (\Throwable $th) {
+	} catch (MYSQLException $th) {
 		// all_chats already created
 	}
 
@@ -617,6 +617,9 @@ elseif (isset($_POST['export_chat'])) {
 	$all = $db->exec("SELECT * FROM $exp->chat, visitors WHERE $exp->chat.senderId = visitors.id ORDER BY $exp->chat.sn")->fetch_all(MYSQLI_ASSOC);
 	
     $dir = "../tmp/";
+	if(!file_exists('../tmp')){
+		mkdir('../tmp', 0777);
+	}
 	$old_files = dir_files($dir);
 	if(count($old_files) > 0){
 		foreach ($old_files as $key => $value) {
@@ -629,11 +632,11 @@ elseif (isset($_POST['export_chat'])) {
 
 	$f = fopen($dir . $name, 'a');
 	if($xt == 'xml'){
-		fwrite($f, '<?xml version="1.0" encoding="UTF-8"?>'.PHP_EOL);
-		fwrite($f, '<messages>'.PHP_EOL);
+		fwrite($f, "\r\n<?xml version = \"1.0\" encoding = \"UTF-8\"?>");
+		fwrite($f, "\r\n<messages>");
 	}
 	if($xt == 'json'){
-		fwrite($f, '{'.PHP_EOL);
+		fwrite($f, "{");
 	}
 	$count = 1;
 	foreach ($all as $key => $value) {
@@ -652,54 +655,53 @@ elseif (isset($_POST['export_chat'])) {
 		$by = $value['username'];
 		$rep = $value['replyingTo'];
 		$mid = $value['messageId'];
-		$m = urldecode(htmlspecialchars_decode($value['message']));
+		$m = str_replace("\\'", "'", htmlspecialchars_decode(implode(" ", explode("\n", $value['message']))));
 
 		if($xt == 'txt'){
-		fwrite($f, ' '.PHP_EOL);
-		fwrite($f, '--------------------------------------'.PHP_EOL);
-		fwrite($f, ('Date Sent: [' . $ds . ']').PHP_EOL);
-		fwrite($f, ('Date Received: [' . $dr . ']').PHP_EOL);
-		fwrite($f, ('Date Seen: [' . $dss . ']').PHP_EOL);
-		fwrite($f, ('Sent By: ' . $by).PHP_EOL);
-		fwrite($f, ('Replying to: ' . $rep).PHP_EOL);
-		fwrite($f, ('Message ID: ' . $mid).PHP_EOL);
-		fwrite($f, ('Message: ' . $m).PHP_EOL);
-		fwrite($f, ('Attachment: ' . $file_mess).PHP_EOL);
-		fwrite($f, '--------------------------------------'.PHP_EOL);
+		fwrite($f, "\r\n--------------------------------------");
+		fwrite($f, "\r\nDate Sent: [" . $ds . "]");
+		fwrite($f, "\r\nDate Received: [" . $dr . "]");
+		fwrite($f, "\r\nDate Seen: [" . $dss . "]");
+		fwrite($f, "\r\nSent By: " . $by);
+		fwrite($f, "\r\nReplying to: " . $rep);
+		fwrite($f, "\r\nMessage ID: " . $mid);
+		fwrite($f, "\r\nMessage: " . $m);
+		fwrite($f, "\r\nAttachment: " . $file_mess);
+		fwrite($f, "\r\n--------------------------------------");
 		}elseif ($xt == 'xml'){
-			fwrite($f, ' <message>'.PHP_EOL);
-			fwrite($f, ('   <date_sent>' . $ds . '</date_sent>').PHP_EOL);
-			fwrite($f, ('   <date_received>' . $dr . '</date_received>').PHP_EOL);
-			fwrite($f, ('   <date_seen>' . $dss . '</date_seen>').PHP_EOL);
-			fwrite($f, ('   <sent_by>' . $by . '</sent_by>').PHP_EOL);
-			fwrite($f, ('   <replying_to>' . $rep . '</replying_to>').PHP_EOL);
-			fwrite($f, ('   <message_id>' . $mid . '</message_id>').PHP_EOL);
-			fwrite($f, ('   <message>' . $m . '</message>').PHP_EOL);
-			fwrite($f, ('   <attachment>' . $file_mess . '</attachment>').PHP_EOL);
-			fwrite($f, ' </message>'.PHP_EOL);
+			fwrite($f, "\r\n <message>");
+			fwrite($f, "\r\n   <date_sent>" . $ds . "</date_sent>");
+			fwrite($f, "\r\n   <date_received>" . $dr . "</date_received>");
+			fwrite($f, "\r\n   <date_seen>" . $dss . "</date_seen>");
+			fwrite($f, "\r\n   <sent_by>" . $by . "</sent_by>");
+			fwrite($f, "\r\n   <replying_to>" . $rep . "</replying_to>");
+			fwrite($f, "\r\n   <message_id>" . $mid . "</message_id>");
+			fwrite($f, "\r\n   <message>" . $m . "</message>");
+			fwrite($f, "\r\n   <attachment>" . $file_mess . "</attachment>");
+			fwrite($f, "\r\n </message>");
 		} elseif ($xt == 'json') {
-			fwrite($f, (' ' . '"' . $mid . '"' . ': {').PHP_EOL);
-			fwrite($f, ('   "date_sent": "' . $ds . '",').PHP_EOL);
-			fwrite($f, ('   "date_received": "' . $dr . '",').PHP_EOL);
-			fwrite($f, ('   "date_seen": "' . $dss . '",').PHP_EOL);
-			fwrite($f, ('   "sent_by": "' . $by . '",').PHP_EOL);
-			fwrite($f, ('   "replying_to": "' . $rep . '",').PHP_EOL);
-			fwrite($f, ('   "message_id": "' . $mid . '",').PHP_EOL);
-			fwrite($f, ('   "message": "' . $m . '",').PHP_EOL);
-			fwrite($f, ('   "attachment": "' . $file_mess . '"').PHP_EOL);
+			fwrite($f, "\r\n\"" . $mid  . "\": {");
+			fwrite($f, "\r\n     \"date_sent\": \"" . $ds . "\",");
+			fwrite($f, "\r\n     \"date_received\": \"" . $dr . "\",");
+			fwrite($f, "\r\n     \"date_seen\": \"" . $dss . "\",");
+			fwrite($f, "\r\n     \"sent_by\": \"" . $by . "\",");
+			fwrite($f, "\r\n     \"replying_to\": \"" . $rep . "\",");
+			fwrite($f, "\r\n     \"message_id\": \"" . $mid . "\",");
+			fwrite($f, "\r\n     \"message\": \"" . $m . "\",");
+			fwrite($f, "\r\n     \"attachment\": \"" . $file_mess . "\"");
 			if($count == count($all)){
-				fwrite($f, (' }').PHP_EOL);
+				fwrite($f, "\r\n }");
 			}else{
-				fwrite($f, (' },').PHP_EOL);
+				fwrite($f, "\r\n },");
 			}
 			$count++;
 		}
 	}
 	if($xt == 'xml'){
-		fwrite($f, '<messages>'.PHP_EOL);
+		fwrite($f, "\r\n</messages>");
 	}
 	if($xt == 'json'){
-		fwrite($f, '}'.PHP_EOL);
+		fwrite($f, "\r\n}");
 	}
     fclose($f);
 

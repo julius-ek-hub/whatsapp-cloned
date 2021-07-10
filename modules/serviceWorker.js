@@ -816,6 +816,7 @@ export function exportChat(chat, extension) {
                 extension: extension
             })
         }).then(result => {
+            console.log(result)
             result = JSON.parse(result);
             if (result.error == 0)
                 res(result.value)

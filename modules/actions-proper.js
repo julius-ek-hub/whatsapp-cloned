@@ -94,7 +94,7 @@ export function verifyUser(btn, info) {
  * Check if the sound system / sound effects is ready
  */
 
-export function prepareUtilities(mainRoot, delayance) {
+export function prepareUtilities(mainRoot, skip) {
     helper._(document.body).addChild([
         helper.make_el('audio').attr({
             id: 'message-sent-sound',
@@ -145,13 +145,39 @@ export function prepareUtilities(mainRoot, delayance) {
         }).self
     ])
     let sounds = [].slice.call(document.getElementsByClassName('sound'));
-    return Promise.all(sounds.map(function(el) {
-        return new Promise(function(resolve, reject) {
-            delayance.html('delay');
-            setTimeout(resolve, 5000);
-            el.addEventListener('canplaythrough', resolve);
+    let loaded = [];
+    let user_is_fedup = false;
+    return new Promise((res, rej) => {
+        skip.clicked(() => {
+            user_is_fedup = true;
+            res();
         });
-    }));
+        sounds.forEach(sound => {
+            sound.addEventListener('canplaythrough', () => {
+                loaded.push(sound);
+                if (loaded.length == sounds.length || user_is_fedup) {
+                    //  res();
+                }
+            })
+        })
+    });
+
+    // return Promise.all(sounds.map(function(el) {
+    //     return new Promise(function(resolve, reject) {
+    //         if (user_is_fedup) {
+    //             console.log(0)
+    //             resolve();
+    //         } else {
+
+    //             skip.clicked(() => {
+    //                 user_is_fedup = true;
+    //                 resolve();
+    //             });
+
+    //             el.addEventListener('canplaythrough', resolve);
+    //         }
+    //     });
+    // }));
 }
 
 /* Check if user is still logged in with cookie */
@@ -404,6 +430,8 @@ export function preparerecording(cancel, send, timings, whatsapp) {
         recoder;
     let chat = JSON.stringify(whatsapp.openedChat); // clone current chatid
     pauseAllAudio(whatsapp.openedChat);
+    cancel.hidden = true;
+    timings.previousSibling.hide();
     return new Promise((res, rej) => {
         let cancel_real = () => {
             canceled = true;
@@ -433,7 +461,9 @@ export function preparerecording(cancel, send, timings, whatsapp) {
 
                 count++;
                 send.hidden = false;
+                cancel.hidden = false;
                 timings.html(message_time(count));
+                timings.previousSibling.show();
                 sw.setTyping('i', whatsapp, true);
                 if (count >= 300) {
                     send.click()
@@ -484,71 +514,76 @@ export function preparerecording(cancel, send, timings, whatsapp) {
  */
 
 export function play(button, media, f, whatsapp) {
-    let currentTimeDisplay = media.nextSibling;
-    let updatePlayedTime;
-    if (!f.played) { f['played'] = 0 };
-    let chatBox = helper._(media).parent().parent().parent().parent().parent().parent().parent().parent().parent().self.id;
-    let allAudio = [].slice.call(document.querySelectorAll(`div#${chatBox} audio`));
-    let playing = allAudio.indexOf(media);
-    let wasPlayinBefore = allAudio.filter(audio => audio.paused == false);
-    if (wasPlayinBefore.length > 0 && allAudio.indexOf(wasPlayinBefore[0]) != playing) {
-        wasPlayinBefore[0].pause();
-        wasPlayinBefore[0].parentElement.previousSibling.firstChild.innerHTML = '<i class ="fa fa-play"></i>';
-        wasPlayinBefore[0].nextSibling.innerText = message_time(f.duration);
-        whatsapp.playingChat = null;
-    }
-    if (media.paused) {
-        try { media.play(); } catch (e) { return }
-        button.innerHTML = '<i class ="fa fa-pause"></i>';
-        let range = media.previousSibling;
-        updatePlayedTime = setInterval(() => {
-            f.played++;
-        }, 1000)
-        whatsapp.playingChat = whatsapp.openedChat;
-        media.ontimeupdate = (e) => {
-            let ct = media.currentTime;
-            let tt = media.duration;
-
-            if (ct == Infinity || tt == Infinity) {
-                ct = f.played;
-                tt = f.duration
-            }
-            media = e.target;
-            range.value = (ct / tt) * 100;
-            currentTimeDisplay.innerText = message_time(ct == 0 ? f.duration : ct)
-        }
-        media.onended = () => {
+    return new Promise((res, rej) => {
+        let currentTimeDisplay = media.nextSibling;
+        let updatePlayedTime;
+        if (!f.played) { f['played'] = 0 };
+        let chatBox = helper._(media).parent().parent().parent().parent().parent().parent().parent().parent().parent().self.id;
+        let allAudio = [].slice.call(document.querySelectorAll(`div#${chatBox} audio`));
+        let playing = allAudio.indexOf(media);
+        let wasPlayinBefore = allAudio.filter(audio => audio.paused == false);
+        if (wasPlayinBefore.length > 0 && allAudio.indexOf(wasPlayinBefore[0]) != playing) {
+            wasPlayinBefore[0].pause();
+            wasPlayinBefore[0].parentElement.previousSibling.firstChild.innerHTML = '<i class ="fa fa-play"></i>';
+            wasPlayinBefore[0].nextSibling.innerText = message_time(f.duration);
             whatsapp.playingChat = null;
-            range.value = 0;
-            media.currentTime = 0.0;
-            f.played = 0;
-            clearInterval(updatePlayedTime);
-            button.innerHTML = '<i class ="fa fa-play"></i>';
-            currentTimeDisplay.innerText = message_time(f.duration);
-            let nextInd = playing + 1;
-            if (nextInd < allAudio.length) {
-                let next = allAudio[nextInd];
+        }
+        if (media.paused) {
+            media.play().then(() => {
+                button.innerHTML = '<i class ="fa fa-pause"></i>';
+                let range = media.previousSibling;
+                updatePlayedTime = setInterval(() => {
+                    f.played++;
+                }, 1000)
+                whatsapp.playingChat = whatsapp.openedChat;
+                media.ontimeupdate = (e) => {
+                    let ct = media.currentTime;
+                    let tt = media.duration;
 
-                if (helper._(media).parent(6).nextSibling.child(0).Id == helper._(next).parent(5).Id) {
-                    helper.scroll_to_message(helper._(next).parent(6).self, 'smooth');
-                    next.parentElement.previousSibling.firstChild.click();
+                    if (ct == Infinity || tt == Infinity) {
+                        ct = f.played;
+                        tt = f.duration
+                    }
+                    media = e.target;
+                    range.value = (ct / tt) * 100;
+                    currentTimeDisplay.innerText = message_time(ct == 0 ? f.duration : ct)
                 }
-            }
+                media.onended = () => {
+                    whatsapp.playingChat = null;
+                    range.value = 0;
+                    media.currentTime = 0.0;
+                    f.played = 0;
+                    clearInterval(updatePlayedTime);
+                    button.innerHTML = '<i class ="fa fa-play"></i>';
+                    currentTimeDisplay.innerText = message_time(f.duration);
+                    let nextInd = playing + 1;
+                    if (nextInd < allAudio.length) {
+                        let next = allAudio[nextInd];
+
+                        if (helper._(media).parent(6).nextSibling.child(0).Id == helper._(next).parent(5).Id) {
+                            helper.scroll_to_message(helper._(next).parent(6).self, 'smooth');
+                            next.parentElement.previousSibling.firstChild.click();
+                        }
+                    }
+                }
+                range.oninput = () => {
+                    let md = media.duration;
+                    let ct = (range.value / 100) * (md == Infinity ? f.duration : md);
+                    media.currentTime = ct;
+                    currentTimeDisplay.innerText = message_time(ct)
+                    f.played = ct;
+                }
+            }).catch(err => {
+                rej()
+            });
+        } else {
+            whatsapp.playingChat = null;
+            media.pause();
+            button.innerHTML = '<i class ="fa fa-play"></i>';
+            clearInterval(updatePlayedTime);
+            currentTimeDisplay.innerText = message_time(f.duration)
         }
-        range.oninput = () => {
-            let md = media.duration;
-            let ct = (range.value / 100) * (md == Infinity ? f.duration : md);
-            media.currentTime = ct;
-            currentTimeDisplay.innerText = message_time(ct)
-            f.played = ct;
-        }
-    } else {
-        whatsapp.playingChat = null;
-        media.pause();
-        button.innerHTML = '<i class ="fa fa-play"></i>';
-        clearInterval(updatePlayedTime);
-        currentTimeDisplay.innerText = message_time(f.duration)
-    }
+    })
 }
 
 export function play_sound(whatsapp, kind, cid, stop) {

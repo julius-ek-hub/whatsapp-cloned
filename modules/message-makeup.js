@@ -220,7 +220,7 @@ export let buildMedia = function(details) {
         needFetch = false;
     }
     let self = this;
-    let ret;
+    let ret, playBtn;
     let file_state = { deleted: true, fetching: true };
     let audio;
 
@@ -229,6 +229,30 @@ export let buildMedia = function(details) {
         audio.hidden = true;
         audio.currentTime = 0.5;
         audio.controls = true;
+        playBtn = helper.make_el('button').attr({
+            class: 'btn play-btn',
+            onclick: (e) => {
+                if (file_state.deleted && file_state.fetching == false) {
+                    self.bottomInfo('This file has been deleted', 'error');
+                    return;
+                }
+                if (file_state.fetching) {
+                    self.bottomInfo('This file is not ready, please wait...', 'error');
+                    return;
+                }
+                if (self.state.selecting.selecting == true) {
+                    return;
+                }
+                if (self.state.recording) {
+                    self.bottomInfo('Can\'t play audio, recording is ongoing...', 'error');
+                    return;
+                }
+                ac.play(e.target.tagName == 'BUTTON' ? e.target : helper._(e.target).parent().self, audio, f, this).catch(() => {
+                    self.bottomInfo('Something is wrong, Sorry!', 'error');
+                });
+            }
+        }).html('<i class="fa fa-spinner fa-spin" style="font-size:18px"></i>');
+
         ret = helper.make_el('table').class('audio-file').addChild(helper.make_el('tbody')
             .addChild(helper.make_el('tr').addChild([
                 helper.make_el('td').style({ position: 'relative' }).addChild([
@@ -244,27 +268,7 @@ export let buildMedia = function(details) {
                         fontSize: '1.1em'
                     }).self
                 ]).self,
-                helper.make_el('td').addChild(helper.make_el('button').attr({
-                    class: 'btn play-btn',
-                    onclick: (e) => {
-                        if (file_state.deleted && file_state.fetching == false) {
-                            self.bottomInfo('This file has been deleted', 'error');
-                            return;
-                        }
-                        if (file_state.fetching) {
-                            self.bottomInfo('This file is not ready, please wait...', 'error');
-                            return;
-                        }
-                        if (self.state.selecting.selecting == true) {
-                            return;
-                        }
-                        if (self.state.recording) {
-                            self.bottomInfo('Can\'t play audio, recording is ongoing...', 'error');
-                            return;
-                        }
-                        ac.play(e.target.tagName == 'BUTTON' ? e.target : helper._(e.target).parent().self, audio, f, this);
-                    }
-                }).html('<i class = "fa fa-play"></i>').self).self,
+                helper.make_el('td').addChild(playBtn.self).self,
                 helper.make_el('td').style({ position: 'relative', width: '200px' }).addChild([
                     helper.make_el('input').attr({
                         type: 'range',
@@ -294,7 +298,13 @@ export let buildMedia = function(details) {
                 width: '100%',
                 objectFit: 'cover'
             },
-            onclick: () => { if (f.type == 'picture') new helper.Modal().expandElement(ret.self) }
+            onclick: () => {
+                if (file_state.fetching) {
+                    self.bottomInfo('This file is not ready, please wait...', 'error');
+                    return;
+                }
+                if (f.type == 'picture') new helper.Modal().expandElement(ret.self)
+            }
         })
     } else {
         ret = helper.make_el('div').html(url)
@@ -305,18 +315,25 @@ export let buildMedia = function(details) {
 
             file_state.deleted = false;
             file_state.fetching = false;
-            if (f.type == 'record')
+            if (f.type == 'record') {
                 audio.src = b;
-            else
+                playBtn.html('<i class ="fa fa-play"></i>');
+            } else
                 ret.attr({ alt: 'Message File', src: b })
         }).catch(err => {
-            ret.attr({ alt: ' Failed to fetch file' })
+            if (f.type == 'record') {
+                playBtn.html('<span class ="material-icons-outlined text-danger">error_outline</span>');
+            } else {
+                ret.attr({ alt: 'Message File', src: b })
+                ret.attr({ alt: ' Failed to fetch file' })
+            }
             file_state.deleted = true;
             file_state.fetching = false;
         })
     } else {
         if (f.type == 'record') {
             audio.src = url;
+            playBtn.html('<i class ="fa fa-play"></i>');
         } else {
             ret.attr({ alt: 'Message File', src: url })
         }

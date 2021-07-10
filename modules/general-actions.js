@@ -363,6 +363,10 @@ export let openConversation = function(details) {
 export let deleteChat = function() {
     let s = this.settings;
     let cid = this.openedChat;
+    if (cid == `chat_0001x${s.id}`) {
+        this.bottomInfo('Sorry you can\'t delete this chat!', 'error');
+        return;
+    }
     new helper.Modal().Confirm({
         title: 'Please Confirm!',
         content: '<hr>You will never see this chat again but will not be deleted for your partner, ' +

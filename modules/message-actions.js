@@ -494,7 +494,7 @@ export let recordIndicator = function(e) {
     let cnR = btn.getAttribute('can-record');
     let recordindicator = helper._(btn).parent().parent().parent().child(4);
     let cancel = recordindicator.child(0).child(0).self;
-    let timings = recordindicator.child(0).child(1).child(1).html('00:00');
+    let timings = recordindicator.child(0).child(1).child(1).html(' <i class="fa fa-spinner fa-spin" style="font-size:18px"></i> Connecting to mic');
     let send = recordindicator.child(0).child(2).self;
     send.hidden = true;
     this.sendGIF(true);

@@ -22,7 +22,7 @@ $(document).ready(() => {
     let welcome = w.welcomeScreen();
     welcome.launch();
     getAllCountries().then(resp => {
-        prepareUtilities(w.mainRoot, welcome.delayance).finally(() => {
+        prepareUtilities(w.mainRoot, welcome.skip).finally(() => {
 
             /**
              * After loading all countries and sound effects, we are ready to.
