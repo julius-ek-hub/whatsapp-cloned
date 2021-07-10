@@ -19,7 +19,7 @@ export function _(el) {
             self = document.querySelector(el);
         }
     } catch (err) {
-        // console.error('Invalid argument! please read https://docs.247-dev.com/helper.js/#_')
+
         return;
     }
 
@@ -1338,28 +1338,26 @@ Modal.prototype.expandElement = function(el, ops = { onopen: () => {}, onclose: 
             position: 'absolute',
             width: '100%',
             background: 'transparent',
-            fontSize: '1.4em',
             top: '0'
         })
         let closeBtn = make_el('button');
-        closeBtn.class('text-danger h2').attr({
+        closeBtn.class('text-danger pt-1 rounded-circle').attr({
             style: {
                 float: 'right',
                 border: 'none',
-                background: 'transparent',
+                background: 'white',
                 margin: '15px 30px',
+                transition: '100ms transform ease-in-out'
             },
             title: 'Close modal',
             onclick: () => { self.close() },
-            onmouseenter: () => { closeBtn.style({ fontWeight: 'bolder' }) },
-            onmouseleave: () => { closeBtn.style({ fontWeight: 'normal' }) }
-        }).html('<span class="material-icons-outlined">close</span>');
+            onmouseenter: () => { closeBtn.style({ transform: 'scale(1.2)' }) },
+            onmouseleave: () => { closeBtn.style({ transform: 'scale(1)' }) }
+        }).html('<span class="material-icons-outlined font-weight-bold" style = "font-size:2em">close</span>');
         head.addChild(closeBtn.self);
-        //foot.innerHTML = 'I am foot';
         self.add_content(head.self);
         self.add_content(el.self);
         self.touch_close = true;
-        // screen.add_content(foot);
         self.open();
     }
     if (tag == 'VIDEO') {
@@ -1377,7 +1375,7 @@ Modal.prototype.expandElement = function(el, ops = { onopen: () => {}, onclose: 
  * A full screen loading window from Windo
  */
 
-Modal.prototype.Loading = function(content = 'Loading...') {
+Modal.prototype.Loading = function(content = 'Loading... <span class = "spin"></spin>') {
     let container = make_el('div').style({
         width: 'auto',
         padding: '5px 35px 5px 35px',
