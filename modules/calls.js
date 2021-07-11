@@ -505,6 +505,10 @@ export let incomingCall = function(properties) {
 export let checkIncomingCall = function() {
     let self = this;
     let check = function() {
+        if (!window.navigator.onLine) {
+            setTimeout(check, 5000);
+            return;
+        }
         if (!self.state.calling) {
             setTimeout(() => {
                 sw.checkIncomingCall(self.settings.id).then(resp => {

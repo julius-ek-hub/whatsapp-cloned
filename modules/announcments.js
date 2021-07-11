@@ -92,7 +92,7 @@ export let welcomeScreen = function() {
         class: 'wc-wlcm-up font-weight-light'
     }).html('WhatsApp Clone').self;
 
-    let skip = helper.make_el('button').class('btn btn-light p-2').html('Skip');
+    let skip = helper.make_el('button').class('btn btn-light p-2').hide().html('Skip');
     let middle = helper.make_el('div').attr({
         class: 'wc-wlcm-middle'
     }).addChild([
@@ -104,7 +104,7 @@ export let welcomeScreen = function() {
         helper.make_el('div').attr({
             class: 'wc-wlcm-loading'
         }).html('Welcome... <i class="fa fa-spinner fa-pulse"></i>').self,
-        helper.make_el('div').class('text-muted p-2').html('Trying to completely load audio files for sound system. If this is taking too long you can skip it!').self,
+        helper.make_el('div').class('text-muted p-2').html('Trying to completely load audio files for sound system. If this is taking too long you can skip it!').hide().self,
         skip.self
     ]).self
 

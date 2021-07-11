@@ -116,7 +116,8 @@ export let updateReceipt = function(chatId) {
     }
 }
 
-export let check4messageUpdates = function() {
+export let check4MessageUpdates = function() {
+
     let chats = this.chats;
     let s = this.settings;
     let self = this;
@@ -184,6 +185,7 @@ export let check4messageUpdates = function() {
                                 message.senderId == s.id) {
 
                                 sw.check4messageUpdates(chatId, messageId, s.id).then(resp => {
+
                                     try {
                                         let lastM = chats[chatId].info.last_message;
                                         let letM_receipt = helper._('#' + chatId).child(1).self.childNodes[1].firstChild;

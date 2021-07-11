@@ -543,11 +543,11 @@ export let openChat = function(id) {
             } else {
                 all_m.child(1).hide();
             }
+
+        }).finally(e => {
             all_m.child(1).child(0).enable().clicked(() => {
                 this.loadMoreMessages(all_m);
             }).child(0).removeClass('spin');
-        }).catch(e => {
-            lb.removeClass('spin');
         })
 
     }

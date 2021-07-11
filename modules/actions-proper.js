@@ -144,9 +144,13 @@ export function prepareUtilities(mainRoot, skip) {
             hidden: 'true'
         }).self
     ])
+
     let sounds = [].slice.call(document.getElementsByClassName('sound'));
     let loaded = [];
     let user_is_fedup = false;
+    setTimeout(() => {
+        skip.show().previousSibling.show();
+    }, 10000);
     return new Promise((res, rej) => {
         skip.clicked(() => {
             user_is_fedup = true;
@@ -156,28 +160,13 @@ export function prepareUtilities(mainRoot, skip) {
             sound.addEventListener('canplaythrough', () => {
                 loaded.push(sound);
                 if (loaded.length == sounds.length || user_is_fedup) {
-                    //  res();
+                    res();
                 }
             })
         })
     });
 
-    // return Promise.all(sounds.map(function(el) {
-    //     return new Promise(function(resolve, reject) {
-    //         if (user_is_fedup) {
-    //             console.log(0)
-    //             resolve();
-    //         } else {
 
-    //             skip.clicked(() => {
-    //                 user_is_fedup = true;
-    //                 resolve();
-    //             });
-
-    //             el.addEventListener('canplaythrough', resolve);
-    //         }
-    //     });
-    // }));
 }
 
 /* Check if user is still logged in with cookie */
@@ -561,7 +550,7 @@ export function play(button, media, f, whatsapp) {
                         let next = allAudio[nextInd];
 
                         if (helper._(media).parent(6).nextSibling.child(0).Id == helper._(next).parent(5).Id) {
-                            helper.scroll_to_message(helper._(next).parent(6).self, 'smooth');
+                            helper.scroll_to(helper._(next).parent(6).self, 'smooth');
                             next.parentElement.previousSibling.firstChild.click();
                         }
                     }

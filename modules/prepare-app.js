@@ -241,7 +241,6 @@ export let realLaunching = function(id, welcome) {
     this.launchHome();
     welcome.destroy();
     this.checkIncomingCall();
-
     let must_always_be_updated = [
         () => this.checkNewMessages(),
         () => this.check4MessageUpdates(),
