@@ -260,12 +260,13 @@ export let checkTyping = function() {
                     let then = new Date(res.date);
                     let mess_ = res.message + '...';
                     let affected = helper._('#' + id).child(1);
+                    let typing = affected.child(2);
+                    let mess = affected.child(1);
                     if ((now.getTime() - then.getTime()) / 1000 <= 1 && res.chat == id) {
-                        affected.child(1).self.hidden = true;
-                        affected.child(2).style({ display: 'block' });
-                        let affectedInner = affected.child(2).child(0);
-                        if (affectedInner.htm() != mess_) {
-                            affectedInner.html(mess_)
+                        mess.hide();
+                        typing.show();
+                        if (typing.htm() != mess_) {
+                            typing.html(mess_)
                         }
                         try {
                             let info = helper._('#chatBox-' + id).child(0).child(0).child(0).child(0).child(0).child(1).child(0).child(1);
@@ -273,8 +274,8 @@ export let checkTyping = function() {
                                 info.html(mess_);
                         } catch (error) {}
                     } else {
-                        affected.child(1).self.hidden = false;
-                        affected.child(2).style({ display: 'none' })
+                        mess.show();
+                        typing.hide();
                         try {
                             helper._('#chatBox-' + id).child(0).child(0).child(0)
                                 .child(0).child(0).child(1).child(0).child(1)

@@ -33,7 +33,8 @@ export let addChat = function(details) {
             helper.make_el('span').style({
                 fontSize: 'large'
             }).class('font-weight-bolder').html(`${this.username(details.contactId, details.name)}`).self,
-            helper.make_el('div').class('text-muted last-message').html(details.lastMessage).self
+            helper.make_el('div').class('text-muted last-message').html(details.lastMessage).self,
+            helper.make_el('div').class('text-muted font-italic').hide().self
         ]).self,
         helper.make_el('td').attr({
             style: {

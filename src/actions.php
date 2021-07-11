@@ -264,56 +264,50 @@ elseif(isset($_POST['check_new_message']) && isset($_POST['date'])){
 	$chat_ids = $db->chats_for($visitor_id);
 	$result = array();
 	
-	$count = 0;
 	if(count($chat_ids) > 0){
 		foreach($chat_ids as $key => $value){
-			try {
 			$chat = $value['chat_id'];
 			$from = $db->get_last_id($chat) - 10;
 			$ch = explode('_', $chat)[0] == 'chat';
 			$messages = array();
-			if($ch){
-			  $messages = $db->exec("SELECT * FROM $chat WHERE senderId != '$visitor_id' AND dateReceived = '0' AND sn >= $from")->fetch_all(MYSQLI_ASSOC);
-			}else{
-               $sql = $db->exec("SELECT * FROM $chat WHERE senderId != '$visitor_id' AND sn >= $from");
-
-			   if($sql->num_rows > 0){
-				   while ($row = $sql->fetch_assoc()) {
-					   $mid = $row['messageId'];
-
-					   if(!in_array($visitor_id, $db->seen_or_received_gp($mid)['received'])){
-                          $messages[]  = $row;
-						  $db->group_message_update($chat, $visitor_id, $mid, 'received', $date);
-					   }
-				   }
-			   }
-			}
-			if(sizeof($messages) > 0){
-			foreach ($messages as $key => $value) {
-				$senderId = $value['senderId'];
-				$mid = $value['messageId'];
-				$rt =  $value['replyingTo'];
-				$messages[$key]['senderInfo'] = $db->exec("SELECT id, username, dp, tel, country, name_col FROM visitors WHERE id = '$senderId'")->fetch_assoc();
-				if($rt != '0'){
-					$message['replyingTo'] = $db->exec("SELECT * FROM $chat  WHERE messageId = '$rt'")->fetch_assoc();
-					$senderIdR = $message['replyingTo']['senderId'];
-					$message['replyingTo']['senderInfo'] = $db->exec("SELECT id, username, dp, tel, country, name_col FROM visitors WHERE id = '$senderIdR'")->fetch_assoc();
-				}
-                if($ch){
-				$db->exec("UPDATE $chat SET dateReceived = '$date' WHERE messageId = '$mid'");
+			$result[$chat] = array();
+			try {
+				if($ch){
+				$messages = $db->exec("SELECT * FROM $chat WHERE senderId != '$visitor_id' AND dateReceived = '0' AND sn >= $from")->fetch_all(MYSQLI_ASSOC);
 				}else{
-					$messages[$key]['deleteInfo'] = json_encode(array('deleted' => $db->group_delete($mid, $senderId)));	
+				$sql = $db->exec("SELECT * FROM $chat WHERE senderId != '$visitor_id' AND sn >= $from");
+
+				if($sql->num_rows > 0){
+					while ($row = $sql->fetch_assoc()) {
+						$mid = $row['messageId'];
+
+						if(!in_array($visitor_id, $db->seen_or_received_gp($mid)['received'])){
+							$messages[]  = $row;
+							$db->group_message_update($chat, $visitor_id, $mid, 'received', $date);
+						}
+					}
 				}
-				
-			 }
-			 $result[$chat] = $messages;
-			 $count++;
-		  }else{
-			$result[$chat] = array();
-		  }
-		 }catch(MYSQLException $e){
-			$result[$chat] = array();
-		 }
+				}
+				if(sizeof($messages) > 0){
+				foreach ($messages as $key => $message) {
+					$senderId = $message['senderId'];
+					$mid = $message['messageId'];
+					$rt =  $message['replyingTo'];
+					$message['senderInfo'] = $db->exec("SELECT id, username, dp, tel, country, name_col FROM visitors WHERE id = '$senderId'")->fetch_assoc();
+					if($rt != '0'){
+						$message['replyingTo'] = $db->exec("SELECT * FROM $chat WHERE messageId = '$rt'")->fetch_assoc();
+						$senderIdR = $message['replyingTo']['senderId'];
+						$message['replyingTo']['senderInfo'] = $db->exec("SELECT id, username, dp, tel, country, name_col FROM visitors WHERE id = '$senderIdR'")->fetch_assoc();
+					}
+					if($ch){
+					$db->exec("UPDATE $chat SET dateReceived = '$date' WHERE messageId = '$mid'");
+					}else{
+						$message['deleteInfo'] = json_encode(array('deleted' => $db->group_delete($mid, $senderId)));	
+					}
+				$result[$chat][] = $message;
+				}
+			  }
+		    } catch(MYSQLException $e){}
 		}
 	}
 		echo json_encode($result);
