@@ -101,17 +101,7 @@ export let createMessageSelection = function(id) {
         this.destroyMessageSelection()
     } else {
         if (selected.every(el => {
-                let m = messages[el];
-                let del = m.deleteInfo;
-                let deleted = true;
-                if (m.isGroup == 1 && del.deleted == 0) {
-                    deleted = false;
-                } else {
-                    if (del[s.id] == 0 && String(del[this.friendId(m.chatId)]).in(['0', '1']))
-                        deleted = false;
-                }
-
-                return !deleted;
+                return !this.check_delete(messages[el]).deleted;
             })) {
             icons.child(2).show();
             icons.child(3).show();
@@ -119,16 +109,7 @@ export let createMessageSelection = function(id) {
             icons.child(3).hide();
         }
         if (selected.length == 1 && selected.every(el => {
-                let m = messages[el];
-                let del = m.deleteInfo;
-                let deleted = true;
-                if (m.isGroup == 1 && del.deleted == 0) {
-                    deleted = false;
-                } else {
-                    if (del[this.statusHolder.id] == 0 && String(del[this.friendId(m.chatId)]).in(['0', '1']))
-                        deleted = false;
-                }
-                return !deleted;
+                return !this.check_delete(messages[el]).deleted;
             })) {
             icons.child(2).show()
         } else {
@@ -145,13 +126,11 @@ export let destroyMessageSelection = function() {
     })
     icons.style({ right: '-100%' });
     let selected = this.state.selecting.selected;
-    if (selected.length > 0) {
-        selected.forEach(sel => {
-            try {
-                helper._('#' + sel).parent().style({ backgroundColor: 'unset', padding: 'unset' });
-            } catch (err) {}
-        });
-    }
+    selected.forEach(sel => {
+        try {
+            helper._('#' + sel).parent().style({ backgroundColor: 'unset', padding: 'unset' });
+        } catch (err) {}
+    });
     this.state.selecting.selecting = false;
     this.state.selecting.selected = [];
 }
@@ -165,7 +144,7 @@ export let actOnMessage = function(target, message_id) {
     }
     let si = details.senderInfo;
     details.senderInfo['senderName'] = this.username(si.id, si.tel);
-    ac.messageActionsPc(target, details, s.id).then(resp => {
+    ac.messageActions(target, details, s.id).then(resp => {
         switch (resp) {
             case 'del':
                 this.confirmDelete(details.messageId).then(del => {
@@ -173,6 +152,7 @@ export let actOnMessage = function(target, message_id) {
                     ac.deleteMessage(del, this, [details.messageId]);
                     this.state.selecting.selecting = false;
                     this.state.selecting.selected = [];
+                    this.bottomInfo('Deleted', 'success');
                 }).catch(e => {
                     this.bottomInfo('Failed to delete', 'error');
                 })
@@ -242,7 +222,7 @@ export let forwardMessages = function() {
             name = this.username(info.id, info.tel);
         }
         let disabledInfo = ['0', 0, s.id].includes(info.blocked) ? '' : '<i class="fa fa-ban"></i> ';
-        let dp = info.group == 1 ? this.defaultDp : this.dp(info.dp, info.id);
+        let dp = info.group == 1 ? `${this.root}/images/whatsapp-logo.png` : this.dp(info.dp, info.id);
         sel.options.push({
             disabled: disabledInfo,
             id: chat,

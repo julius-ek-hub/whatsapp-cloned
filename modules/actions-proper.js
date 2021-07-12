@@ -313,19 +313,21 @@ export function niceDate(date, type) {
  * Detecting the swipe right on messages during mobile reply
  */
 export function detectMobileContextMenu(e) {
-    let still_touching = true;
+    let worthy = false;
+    let y1 = e.changedTouches[0].clientY
+    setTimeout(() => {
+        worthy = true;
+    }, 500);
     return new Promise((res, rej) => {
-        setTimeout(() => {
-            if (still_touching)
-                res()
+
+        e.target.ontouchend = (e) => {
+            let dy = e.changedTouches[0].clientY - y1;
+            if (Math.abs(dy) <= 10 && worthy)
+                setTimeout(res, 500);
             else
                 rej()
-        }, 500);
-        ['touchmove', 'touchend'].forEach(evt => {
-            helper._(e.target)[evt](() => {
-                still_touching = false;
-            })
-        })
+        }
+
     })
 }
 
@@ -350,7 +352,7 @@ export function messageReceipt(details) {
     return { receipt: receiptClass, receiptCss: receiptClassCss };
 }
 
-export function messageActionsPc(e, target, myId) {
+export function messageActions(e, target, myId) {
     return new Promise((res, rej) => {
         /*We make our own menu*/
         let s = new helper.Modal().RequestSelection();
@@ -674,6 +676,12 @@ export function deleteMessage(how, whatsapp, single) {
                 mess.addClass('deleted').
                 html('<span class="text-muted"><i class="fa fa-ban"></i> <i>You deleted this message</i></span>');
             }
+
+            let lm = whatsapp.chats[whatsapp.openedChat].info.last_message;
+            if (lm.messageId == m.messageId) {
+                whatsapp.highlighChatHead(messages[el]);
+            }
+
         })
     });
 }

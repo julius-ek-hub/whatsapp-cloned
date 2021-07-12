@@ -260,8 +260,6 @@ export let realLaunching = function(id, welcome) {
 
 export let fullScreen = function() {
 
-
-    let self = this;
     let elem = document.documentElement;
     let fse = document.fullscreenElement;
     let errors = 0;
@@ -289,7 +287,7 @@ export let fullScreen = function() {
 
     }
     if (errors != 0) {
-        self.bottomInfo('Your browser does not support Full screen')
+        this.bottomInfo('Your browser does not support Full screen', 'error')
     }
 }
 

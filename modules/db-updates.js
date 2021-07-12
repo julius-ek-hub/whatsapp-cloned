@@ -165,15 +165,23 @@ export let check4MessageUpdates = function() {
                             } else if (message.isGroup == 0 && di[self.friendId(message.chatId)] == 0 && c1) {
                                 maycheck = true;
                             }
+
                             if (maycheck) {
                                 sw.checkDeleted(chatId, messageId, si).then(resp => {
                                     if (resp == 2) {
                                         helper._('#' + messageId).addClass('deleted').
                                         html('<span class="text-muted"><i class="fa fa-ban"></i> <i>This message was deleted</i></span>').self
-                                        if (message.isGroup == 1)
+                                        let lm = chats[chatId].info.last_message;
+                                        if (message.isGroup == 1) {
                                             message.deleteInfo.deleted = 2;
-                                        else
+                                            lm.deleteInfo.deleted = 2;
+                                        } else {
                                             message.deleteInfo[si] = 2;
+                                            lm.deleteInfo[si] = 2;
+                                        }
+                                        if (lm.messageId == message.messageId) {
+                                            self.highlighChatHead(lm);
+                                        }
                                     }
                                 }).catch(err => {
                                     //Err

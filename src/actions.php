@@ -46,9 +46,10 @@ elseif(isset($_POST['bring_messages_for']) && isset($_POST['date']) && isset($_P
 			$message['replyingTo']['senderInfo'] = $db->exec("SELECT id, username, dp, tel, country, name_col FROM visitors WHERE id = '$senderIdR'")->fetch_assoc();
 		}
 		if(explode('_', $chat_id)[0] == 'chat' && $message['dateReceived'] == '0' && $userid != $visitor_id){
+			$message['deleteInfo'] = json_decode($message['deleteInfo']);
 			$db->exec("UPDATE $chat_id SET dateReceived = '$now' WHERE messageId = '$mid'");
 		}else if(explode('_', $chat_id)[0] == 'group'){
-			$message['deleteInfo'] = json_encode(array('deleted' => $db->group_delete($mid, $userid)));
+			$message['deleteInfo'] = array('deleted' => $db->group_delete($mid, $userid));
 			if($userid != $visitor_id){
 			  $db->group_message_update($chat_id, $visitor_id, $mid, 'received', $now);
 		}

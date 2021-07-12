@@ -91,3 +91,5 @@ The Database enviroment would be dynamically created from your values here. Make
 - App small screen
 
 ![App - small screen](https://www.247-dev.com/projects/whatsapp-clone/images/fdvdfvdf.png)
+
+## [View main gallery](https://www.247-dev.com/projects/whatsapp-clone/images/ "WhatsApp Clone gallery")

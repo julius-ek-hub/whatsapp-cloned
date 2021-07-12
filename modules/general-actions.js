@@ -73,7 +73,45 @@ export let pauseRecording = function() {
     }
 }
 
-
+export let check_delete = function(details) {
+    let del = details.deleteInfo;
+    del = typeof del == 'string' ? JSON.parse(del) : del;
+    let ban_ic = '<i class="fa fa-ban"></i> ';
+    let si = details.senderId;
+    let my_id = this.settings.id;
+    let ret = {
+        deleted: false,
+        by: null,
+        message: 'null'
+    };
+    if (si == null) {
+        return ret;
+    }
+    if (details.isGroup == 1) {
+        if (del.deleted == 1 || del.deleted == 2) {
+            ret.deleted = true;
+        }
+        if (del.deleted == 2 && si == my_id) {
+            ret.message = ban_ic + '<i>You deleted this message</i>';
+            ret.by = my_id;
+        }
+    } else {
+        let my_dl = del[my_id];
+        let fr_id = this.friendId(details.chatId);
+        let fr_dl = del[fr_id];
+        if (my_dl != 0 || fr_dl != 0) {
+            ret.deleted = true;
+        }
+        if (my_dl == 2 && si == my_id) {
+            ret.message = ban_ic + '<i>You deleted this message</i>';
+            ret.by = my_id;
+        } else if ((fr_dl == 2 || fr_dl == 3) && si == fr_id) {
+            ret.message = ban_ic + '<i>This message was deleted</i>';
+            ret.by = fr_id;
+        }
+    }
+    return ret;
+}
 
 export let highlighChatHead = function(details, new_) {
     let chat = helper._('#' + details.chatId);
@@ -96,12 +134,13 @@ export let highlighChatHead = function(details, new_) {
         let d = ac.describeFile(details.fileInfo);
         lastM = d.icon + ' ' + d.description;
     }
+    let del = this.check_delete(details);
     let inf_ = this.chats[details.chatId].info;
     chat = chat.self;
     let last_mess_holder = chat.childNodes[1].childNodes[1],
         last_date = chat.lastChild.firstChild,
         last_unr = chat.lastChild.lastChild.lastChild;
-    last_mess_holder.innerHTML = receipt + '<span class="' + lm_receipt + '">' + sname + helper.reduce(lastM, 60) + '</span>';
+    last_mess_holder.innerHTML = del.deleted ? del.message : (receipt + '<span class="' + lm_receipt + '">' + sname + helper.reduce(lastM, 60) + '</span>');
     last_date.innerHTML = new Date(details.dateSent).nice_one(true);
     if (details.senderId != s.id && this.openedChat != details.chatId && details.dateSeen == 0) {
         inf_.unread++;

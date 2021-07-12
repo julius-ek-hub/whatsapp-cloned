@@ -252,12 +252,16 @@ function group_delete($mid, $senderId){
     try {
 		$last_message_sn = $this->get_last_id($chat_id);
         $last_message = $this->exec("SELECT * FROM $chat_id WHERE sn = '$last_message_sn'")->fetch_assoc();
+        $last_message['deleteInfo'] = json_decode($last_message['deleteInfo']);
         $senderId = $last_message['senderId'];
         if($last_message['isGroup'] == '0'){
            $this->exec("UPDATE $chat_id SET dateReceived = '$date' WHERE dateReceived = '0' AND senderId != '$visitor_id'");
-        }else if($senderId != $visitor_id){
-            $this->group_message_update($chat_id, $visitor_id, $last_message['messageId'], 'received', $date);
+        }else{
+        $last_message['deleteInfo'] = array('deleted' => $this->group_delete( $last_message['messageId'], $visitor_id));
+         if($senderId != $visitor_id){
+           $this->group_message_update($chat_id, $visitor_id, $last_message['messageId'], 'received', $date);
         }
+      }
         $last_message['senderInfo'] = $this->exec("SELECT id, username, dp, tel, country, name_col FROM visitors WHERE id = '$senderId'")->fetch_assoc();
         return $last_message;
 	} catch (MYSQLException $e) {

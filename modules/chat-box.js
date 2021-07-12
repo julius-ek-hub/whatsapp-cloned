@@ -25,7 +25,7 @@ export let ChatBox = function(properties) {
             verticalAlign: 'middle',
             textAlign: 'center',
             color: 'gray'
-        }).html('You can not send messages to this chat <a href="" target="_blank">Learn more...</a>').self
+        }).html('You can not send messages to this chat').self
     ).self;
     block.hidden = properties.group == 1 ? true : (this.settings.blocked_by.indexOf(properties.chatId) == -1);
     mainBody.addChild([
@@ -141,9 +141,10 @@ export let ChatBox = function(properties) {
                         title: 'Delete selected message(s)',
                         onclick: () => {
                             this.confirmDelete().then(del => {
-                                this.updateInnerNotification(self.openedChat, true)
-                                ac.deleteMessage(del, self);
+                                this.updateInnerNotification(this.openedChat, true)
+                                ac.deleteMessage(del, this);
                                 this.destroyMessageSelection();
+                                this.bottomInfo('Deleted', 'success');
                             }).catch(e => {
                                 this.bottomInfo('Failed to delete', 'error');
                             })
@@ -519,13 +520,13 @@ export let openChat = function(id) {
         this.openChat(id)
         this.openedChats.push(id);
         let all_m = helper._(`#chatBox-${id}`).child(0).child(1);
-        let lb = all_m.child(1).child(0).disable().child(0).addClass('spin');
+        all_m.child(1).child(0).disable().child(0).addClass('spin');
         sw.loadMessages(info.chat_id, s.id, { max: '', refreshing: '' }).then(resp => {
             if (resp.length > 0) {
                 if (resp.length < 10) { all_m.child(1).hide(); }
                 resp.forEach(message => {
                     let gp = info.chat_id.split('_')[0] == 'group';
-                    let di = JSON.parse(message.deleteInfo);
+                    let di = typeof message.deleteInfo == 'string' ? JSON.parse(message.deleteInfo) : message.deleteInfo;
                     message.deleteInfo = di;
                     if ((gp && String(di.deleted).in(['2', '0'])) || (!gp && String(di[s.id]).in(['0', '2']))) {
 

@@ -36,6 +36,7 @@ export let buildMessageGUI = function(details, what, idInner) {
         let receiptClass = '',
             receiptClassCss = '',
             message_date_mini_class = 'message-mini-date-left';
+
         if (si == s.id) {
             message_date_mini_class = 'message-mini-date';
             let r = ac.messageReceipt(details);
@@ -169,7 +170,7 @@ export let buildMessageGUI = function(details, what, idInner) {
         oncontextmenu: (e) => {
             if (messBox.Id.split('_sn_').length == 1) { return }
 
-            if (this.state.selecting.selecting == true) {
+            if (this.state.selecting.selecting) {
                 e.preventDefault()
                 return;
             }
@@ -180,7 +181,7 @@ export let buildMessageGUI = function(details, what, idInner) {
         onclick: (e) => {
             if (messBox.Id.split('_sn_').length == 1) { return }
 
-            if (this.state.selecting.selecting == true) {
+            if (this.state.selecting.selecting) {
                 self.createMessageSelection(messBox.Id);
             } else {
                 if (firstClick == 0) {
@@ -196,7 +197,7 @@ export let buildMessageGUI = function(details, what, idInner) {
     }).touched((e) => {
         if (messBox.Id.split('_sn_').length == 1) { return }
 
-        if (this.state.selecting.selecting == true) {
+        if (this.state.selecting.selecting) {
             return;
         }
         ac.detectMobileContextMenu(e).then(() => {
@@ -232,7 +233,7 @@ export let buildMedia = function(details) {
         playBtn = helper.make_el('button').attr({
             class: 'btn play-btn',
             onclick: (e) => {
-                if (file_state.deleted && file_state.fetching == false) {
+                if (file_state.deleted && !file_state.fetching) {
                     self.bottomInfo('This file has been deleted', 'error');
                     return;
                 }
@@ -240,7 +241,7 @@ export let buildMedia = function(details) {
                     self.bottomInfo('This file is not ready, please wait...', 'error');
                     return;
                 }
-                if (self.state.selecting.selecting == true) {
+                if (self.state.selecting.selecting) {
                     return;
                 }
                 if (self.state.recording) {
@@ -303,7 +304,8 @@ export let buildMedia = function(details) {
                     self.bottomInfo('This file is not ready, please wait...', 'error');
                     return;
                 }
-                if (f.type == 'picture') new helper.Modal().expandElement(ret.self)
+
+                if (f.type == 'picture' && !this.state.selecting.selecting) new helper.Modal().expandElement(ret.self)
             }
         })
     } else {

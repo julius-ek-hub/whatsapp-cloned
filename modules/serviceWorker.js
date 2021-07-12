@@ -424,7 +424,6 @@ export function deleteMessage(mess, how, me) {
                 user: me
             })
         }).then((e) => {
-            console.log(e)
             res()
         })
     })

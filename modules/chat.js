@@ -107,14 +107,14 @@ export let prepareChat = function(chat) {
         }
         removed = info.partner_removed;
     }
-
+    let del = this.check_delete(info.last_message);
     let sname = (info.last_message.isGroup == 1 && ld != 'Recently') ? (info.last_message.senderId == this.settings.id ? 'You' : this.username(info.last_message.senderId, info.last_message.senderInfo.tel)) + ': ' : '';
     this.addChat({
         chatId: info.chat_id,
         contactId: info.id,
         dp: dp,
         name: name,
-        lastMessage: lastReceipt + '<span class="' + lm_receipt + '">' + sname + ac.decorateMessage(helper.reduce(lastM, 60)) + '</span>',
+        lastMessage: del.deleted ? del.message : (lastReceipt + '<span class="' + lm_receipt + '">' + sname + ac.decorateMessage(helper.reduce(lastM, 60)) + '</span>'),
         unread: info.unread,
         removed: removed,
         lastDate: (!['0', 0].includes(info.blocked)) ? '' : (ld == 'Recently' ? 'Recently' : new Date(info.last_message.dateSent).nice_one())

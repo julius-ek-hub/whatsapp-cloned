@@ -44,7 +44,7 @@ export let autoWelcomeMessage = function(chat) {
     const a = `*Hi there!*
          Thanks for taking your precious time to test my project. If you are a developer I will be so glad to have you as a mentor cuz I am just a junior developer but if you are a junior like me, we can work together. For any of the above, we can begin by sharing reliable contacts.
           If you are not a developer then God bless you for your support especially in your career.
-          Try to read everything about the features here => ${self.root} and try them all not forgetting to report any issue.`;
+          Try to read everything about the features here => ${self.root.split('/app')[0]} and try them all not forgetting to report any issue.`;
     const a1 = `You can download the project for free from the GitHub repository https://github.com/julius-ek-hub/whatsapp-clone
         But if you need concise source codes for some particular features in the project, then drop me an email here -> aids@247-dev.com with subject *WhatsApp Clone*`;
     const b = `All my Online channels are new, please help me grow it together by:
@@ -427,7 +427,7 @@ export let loadMoreMessages = function(holder) {
                 let message = resp[index];
 
                 let gp = cid.split('_')[0] == 'group';
-                let di = JSON.parse(message.deleteInfo);
+                let di = typeof message.deleteInfo == 'string' ? JSON.parse(message.deleteInfo) : message.deleteInfo;
                 message.deleteInfo = di;
                 if ((gp && String(di.deleted).in(['2', '0'])) || (!gp && String(di[s.id]).in(['0', '2']))) {
 
@@ -459,7 +459,7 @@ export let loadMoreMessages = function(holder) {
 
 export let refreshMessages = function(chat_id) {
     let s = this.settings;
-    let recording = this.state.recording == true;
+    let recording = this.state.recording;
     let uploading = this.state.needUpload.length != 0;
     let replying = this.state.replyingTo != '0';
     let selecting = this.state.selecting.selecting;
@@ -496,7 +496,7 @@ export let refreshMessages = function(chat_id) {
         if (resp.length > 0) {
             resp.forEach(message => {
                 let gp = chat_id.split('_')[0] == 'group';
-                let di = JSON.parse(message.deleteInfo);
+                let di = typeof message.deleteInfo == 'string' ? JSON.parse(message.deleteInfo) : message.deleteInfo;
                 message.deleteInfo = di;
                 if ((gp && String(di.deleted).in(['2', '0'])) || (!gp && String(di[s.id]).in(['0', '2']))) {
 
@@ -512,13 +512,13 @@ export let refreshMessages = function(chat_id) {
 
             this.updateReceipt(chat_id);
         }
-
-        window.loading_messages_for = null;
         load.child(0).enable().clicked(() => {
             this.loadMoreMessages(holder)
         }).child(0).removeClass('spin');
     }).catch(e => {
         holder.child(1).child(0).enable().child(0).removeClass('spin');
+    }).finally(() => {
+        this.destroyMessageSelection();
         window.loading_messages_for = null;
     })
 }

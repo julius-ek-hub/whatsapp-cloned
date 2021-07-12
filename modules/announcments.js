@@ -83,7 +83,7 @@ export let bottomInfo = function(message, type) {
     }, 4000);
 }
 
-export let welcomeScreen = function() {
+export let welcomeScreen = function(message = 'Welcome') {
     let wn = new helper.Modal({
         bg: 'white'
     });
@@ -103,7 +103,7 @@ export let welcomeScreen = function() {
         }).self,
         helper.make_el('div').attr({
             class: 'wc-wlcm-loading'
-        }).html('Welcome... <i class="fa fa-spinner fa-pulse"></i>').self,
+        }).html(`${message}... <i class="fa fa-spinner fa-pulse"></i>`).self,
         helper.make_el('div').class('text-muted p-2').html('Trying to completely load audio files for sound system. If this is taking too long you can skip it!').hide().self,
         skip.self
     ]).self
@@ -111,12 +111,12 @@ export let welcomeScreen = function() {
     let bottom = helper.make_el('div').attr({
         class: 'wc-wlcm-down'
     }).addChild([
-        helper.make_el('span').html('From').self,
-        helper.make_el('h6').attr({
+        helper.make_el('span').html('by').self,
+        helper.make_el('h3').attr({
             style: {
                 fontWeight: 'light'
             }
-        }).html('247-dev.com').self
+        }).html(this.username('0001', 'Julius')).self
     ]).self
 
     let body = helper.make_el('div').addChild([top, middle, bottom]).self

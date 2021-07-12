@@ -216,6 +216,10 @@ export function _(el) {
             self.hidden = false;
             return _(el)
         },
+        unfocus: function() {
+            self.blur();
+            return _(el)
+        },
         truncate: function() {
             self.innerHTML = '';
             return _(el)
@@ -463,11 +467,12 @@ String.prototype.escape = function() {
         }).join('').replace(/'/g, "\\'");
     }
 }
-String.prototype.unescape = function() {
+String.prototype.unescape = function(html) {
+    let final;
     if (this.length == '') {
-        return this;
+        final = this;
     } else {
-        return this.split('').map(function(value) {
+        final = this.split('').map(function(value) {
             let ret;
             switch (value) {
                 case "<":
@@ -481,7 +486,11 @@ String.prototype.unescape = function() {
             }
             return ret;
         }).join('').replace(/\\'/g, "'");
+
+        if (html)
+            final.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
     }
+    return final;
 }
 
 String.prototype.to_utf8 = function() {
