@@ -14,6 +14,9 @@ export let buildMessageGUI = function(details, what, idInner) {
         date = '--- ',
         borderRadius = '0px 8px 8px 8px';
     let margin_ = '0px';
+    let mess_menu = helper.make_el('button').class('message-menu').attr({
+        title: 'Click to take actions on this message'
+    }).html('<span class="material-icons-outlined">more_horiz</span>');
     if (what == 'date') {
         bg = 'lightblue';
         messageClass = ' m-date '
@@ -55,27 +58,10 @@ export let buildMessageGUI = function(details, what, idInner) {
             date = new Date(d).format('h:ia') + ' ';
         }
 
-        let del = details.deleteInfo;
-        del = typeof del == 'string' ? JSON.parse(del) : del;
-
-        let a1 = 'You deleted this message',
-            a2 = 'This message was deleted';
-        let announce = a2;
-        if ('deleted' in del && ((String(del.deleted).in(['2', '3']) && si != s.id) ||
-                (del.deleted == 2 && si == s.id))) {
-            messageClass = ' deleted ';
-            if (si == s.id) {
-                announce = a1;
-            }
-            message_content.push(helper.make_el('span').class('text-muted').html('<i class="fa fa-ban"></i> <i>' + announce + '</i>').self);
-        } else if (del[s.id] == 2 || String(del[this.friendId(details.chatId)]).in(['2', '3'])) {
-
-            if (del[s.id] == 2) {
-                announce = a1;
-            }
-
-            message_content.push(helper.make_el('span').class('text-muted').html('<i class="fa fa-ban"></i> <i>' + announce + '</i>').self);
-
+        message_content.push(mess_menu.self)
+        let deleted = this.check_delete(details);
+        if (deleted.deleted) {
+            message_content.push(helper.make_el('span').class('text-muted ml-4').html(deleted.message).self);
         } else {
             let fmt = 'initial';
             if (details.isGroup == 1 && details.senderId != s.id) {
@@ -194,16 +180,16 @@ export let buildMessageGUI = function(details, what, idInner) {
                 }
             }
         }
-    }).touched((e) => {
+    }).addChild(message_content).appendTo(message_container);
+
+    mess_menu.clicked((e) => {
         if (messBox.Id.split('_sn_').length == 1) { return }
 
         if (this.state.selecting.selecting) {
             return;
         }
-        ac.detectMobileContextMenu(e).then(() => {
-            self.actOnMessage(e, messBox.Id);
-        }).catch(() => {});
-    }).addChild(message_content).appendTo(message_container);
+        self.actOnMessage(e, messBox.Id);
+    })
 
     return message_container;
 }

@@ -169,8 +169,23 @@ export let check4MessageUpdates = function() {
                             if (maycheck) {
                                 sw.checkDeleted(chatId, messageId, si).then(resp => {
                                     if (resp == 2) {
-                                        helper._('#' + messageId).addClass('deleted').
-                                        html('<span class="text-muted"><i class="fa fa-ban"></i> <i>This message was deleted</i></span>').self
+
+                                        helper._('#' + messageId).addClass('deleted').truncate().addChild([
+
+                                            helper.make_el('button').class('message-menu').attr({
+                                                title: 'Click to take actions on this message',
+                                                onclick: (e) => {
+                                                    if (self.state.selecting.selecting) {
+                                                        return;
+                                                    }
+                                                    self.actOnMessage(e, messageId);
+                                                }
+                                            }).html('<span class="material-icons-outlined">more_horiz</span>').self,
+
+                                            helper.make_el('span').class('text-muted ml-4').html('<i class="fa fa-ban"></i> <i>This message was deleted</i>').self
+
+                                        ]);
+
                                         let lm = chats[chatId].info.last_message;
                                         if (message.isGroup == 1) {
                                             message.deleteInfo.deleted = 2;

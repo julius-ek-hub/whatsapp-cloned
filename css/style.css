@@ -553,6 +553,32 @@ button.close-reply:focus {
     overflow-wrap: break-word;
     transition: 0.3s all;
     margin-bottom: 3px;
+    position: relative;
+    overflow: hidden;
+}
+
+.message-menu {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: +1;
+    border: 0px;
+    background: transparent;
+    background-image: linear-gradient(to top right, rgba(0, 0, 0, 0.05), transparent);
+    transition: 300ms all ease-in-out;
+    padding: 0px;
+    height: 25px;
+    color: rgba(0, 0, 0, 0.3);
+}
+
+.message-menu:focus {
+    outline: none;
+}
+
+.message-menu:hover {
+    transform: scale(1.2);
+    color: rgba(0, 0, 0, 0.6);
+    background-image: linear-gradient(to top right, rgba(165, 67, 67, 0.1), transparent);
 }
 
 .message .text-message {

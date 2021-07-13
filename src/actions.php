@@ -641,7 +641,7 @@ elseif (isset($_POST['export_chat'])) {
 			$file = json_decode($file);
 			$t_ = $file->type;
 		    $dir_ = $t_ == 'picture' ? 'Pictures' : ($t_ == 'record' ? 'Recordings' : 'Documents');
-			$file_mess = ROOT . 'file-viewer/?f=' . base64_encode(ROOT . 'projects/whatsapp-clone/app/visitors/' .$value['id'] . '/' . $dir_ . '/' . $file->url);
+			$file_mess = ROOT . '/file-viewer/?f=' . base64_encode(ROOT . '/visitors/' .$value['id'] . '/' . $dir_ . '/' . $file->url);
 		}
 
 		$ds = $value['dateSent'];

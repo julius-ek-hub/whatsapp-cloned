@@ -80,7 +80,6 @@ export let confirmDelete = function(single) {
     });
 }
 export let createMessageSelection = function(id) {
-    let s = this.settings;
     let holder = helper._('#chatBox-' + this.openedChat).child(0).child(0).child(0).child(0).child(0);
     let icons = holder.child(1).child(1);
     [holder.child(0), holder.child(2), holder.child(3)].forEach(el => {
@@ -152,9 +151,6 @@ export let actOnMessage = function(target, message_id) {
                     ac.deleteMessage(del, this, [details.messageId]);
                     this.state.selecting.selecting = false;
                     this.state.selecting.selected = [];
-                    this.bottomInfo('Deleted', 'success');
-                }).catch(e => {
-                    this.bottomInfo('Failed to delete', 'error');
                 })
                 break;
             case 'sel':

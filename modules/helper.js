@@ -220,6 +220,9 @@ export function _(el) {
             self.blur();
             return _(el)
         },
+        toString: function() {
+            return make_el('div').addChild(self).htm();
+        },
         truncate: function() {
             self.innerHTML = '';
             return _(el)

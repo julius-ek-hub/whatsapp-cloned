@@ -144,9 +144,6 @@ export let ChatBox = function(properties) {
                                 this.updateInnerNotification(this.openedChat, true)
                                 ac.deleteMessage(del, this);
                                 this.destroyMessageSelection();
-                                this.bottomInfo('Deleted', 'success');
-                            }).catch(e => {
-                                this.bottomInfo('Failed to delete', 'error');
                             })
                         }
                     }).html('<i class ="fa fa-trash"></i>').self,

@@ -647,15 +647,29 @@ export function lastSeen(date) {
 
 export function deleteMessage(how, whatsapp, single) {
     let myid = whatsapp.settings.id;
-    let messages = whatsapp.chats[whatsapp.openedChat].messages;
+    let oc = whatsapp.openedChat;
+    let messages = whatsapp.chats[oc].messages;
     let all = single ? single : whatsapp.state.selecting.selected;
-    all.forEach(el => {
-        let m = messages[el];
+    let done = 0;
+    let err_mess = '';
+    let process = function(index = 0) {
+        if (index >= all.length) {
+            george();
+            return;
+        }
+        let id = all[index];
+        let m = messages[id];
+        if (oc.split('_')[0] == 'group' && m.senderId != myid) {
+            err_mess = 'Only your messages are deleted in group chat! '
+            process(index + 1);
+            return;
+        }
         let di = m.deleteInfo;
-        messages[el].deleteInfo = typeof di == 'string' ? JSON.parse(di) : di;
+        messages[id].deleteInfo = typeof di == 'string' ? JSON.parse(di) : di;
         sw.deleteMessage(m, how, myid).then(() => {
-            messages[el].deleteInfo[m.isGroup == 1 ? 'deleted' : myid] = how;
-            let mess = helper._('#' + el);
+            done++;
+            messages[id].deleteInfo[m.isGroup == 1 ? 'deleted' : myid] = how;
+            let mess = helper._('#' + id);
             if (how == 1 || how == 3) {
                 let box = mess.parent();
                 let psibling = helper._(box.self.previousSibling);
@@ -673,17 +687,39 @@ export function deleteMessage(how, whatsapp, single) {
                 }
 
             } else {
-                mess.addClass('deleted').
-                html('<span class="text-muted"><i class="fa fa-ban"></i> <i>You deleted this message</i></span>');
+                mess.addClass('deleted').truncate().addChild([
+
+                    helper.make_el('button').class('message-menu').attr({
+                        title: 'Click to take actions on this message',
+                        onclick: (e) => {
+                            if (whatsapp.state.selecting.selecting) {
+                                return;
+                            }
+                            whatsapp.actOnMessage(e, id);
+                        }
+                    }).html('<span class="material-icons-outlined">more_horiz</span>').self,
+
+                    helper.make_el('span').class('text-muted ml-4').html('<i class="fa fa-ban"></i> <i>You deleted this message</i>').self
+
+                ]);
             }
 
             let lm = whatsapp.chats[whatsapp.openedChat].info.last_message;
             if (lm.messageId == m.messageId) {
-                whatsapp.highlighChatHead(messages[el]);
+                whatsapp.highlighChatHead(messages[id]);
             }
-
+            process(index + 1);
         })
-    });
+    }
+
+    function george() {
+        if (done > 0)
+            whatsapp.bottomInfo('Deleted ' + done, 'success');
+        else
+            whatsapp.bottomInfo(err_mess + 'Deleted 0', 'error');
+    }
+
+    process();
 }
 
 
