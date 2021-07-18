@@ -349,6 +349,7 @@ export let launchHome = function() {
                 }).then(() => {
                     let loading = new helper.Modal().Loading('<div class="text-muted">Logging Out... <i class="fa fa-spinner fa-spin" style="font-size:24px"></i></div>');
                     sw.logOut(id).then(() => {
+                        localStorage.clear();
                         setTimeout(() => {
                             loading.loader.close()
                             window.location.reload()
