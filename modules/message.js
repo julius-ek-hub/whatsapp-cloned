@@ -126,11 +126,18 @@ export let messageSent = function(client, server) {
         if (server.isGroup == 1) {
             server.deleteInfo['deleted'] = 0;
         }
+        server['status'] = 'sent';
+        let bx = helper._('#' + client.messageId.toString());
+        if (client.status == 'failed') {
+            this.unsentMessages(client.chatId).drop(client.messageId);
+            bx.parent(2).addChild(bx.parent().self);
+        }
         delete this.chats[client.chatId].messages[client.messageId];
         this.chats[server.chatId].messages[server.messageId] = server;
         this.chats[server.chatId].info.last_message = server;
+
         this.highlighChatHead(server);
-        let message_gui = helper._('#' + client.messageId.toString()).removeClass('message-sending');
+        let message_gui = bx.removeClass('message-sending');
         message_gui.id(server.messageId);
         message_gui.lastChild.lastChild.firstChild.removeClass('text-danger').html(new Date(server.dateSent).format('h:ia') + ' ');
         message_gui.lastChild.lastChild.lastChild.removeClass('text-danger').style({ cursor: 'unset' }).clicked(() => { return; }).html('done');
@@ -139,43 +146,87 @@ export let messageSent = function(client, server) {
 }
 
 export let messageSentFailed = function(client) {
+    let self = this;
     try {
         let s = this.settings;
+
+        client.status = 'failed';
+        this.chats[client.chatId].messages[client.messageId] = client;
+        this.unsentMessages(client.chatId).add(client);
+
+
         let message_gui = helper._('#' + client.messageId.toString()).removeClass('message-sending');
-        let d = message_gui.lastChild.lastChild.firstChild.addClass('text-danger').html('Couldn\'t send');
-        let rec = message_gui.lastChild.lastChild.lastChild.addClass('text-danger').style({ cursor: 'pointer' }).clicked(() => {
+        message_gui.lastChild.lastChild.firstChild.addClass('text-danger').html('Couldn\'t send');
+        message_gui.lastChild.lastChild.lastChild.addClass('text-danger').style({ cursor: 'pointer' }).clicked(() => {
+            let need_resend = Object.values(this.chats[client.chatId].messages).filter(mess => { return mess.messageId.split('_sn_').length == 1 });
+            let choosen_for_resend = [client];
             let sel = new helper.Modal().RequestSelection();
             sel.title = '';
             sel.options = [
-
                 { id: 'del', value: 'Delete' },
                 { id: 'res', value: 'Resend' },
-                { id: 'null', value: 'Two things can cause a message not to be sent; Network issues or either of you has block the other', disabled: true }
             ];
+            if (need_resend.length > 1) {
+                sel.options.push({ id: 'del_all', value: 'Delete All' });
+                sel.options.push({ id: 'res_all', value: 'Resend All' });
+            }
+            sel.options.push({ id: 'null', value: 'Two things can cause a message not to be sent; Network issues or either of you has block the other', disabled: true })
+
             sel.request().then(res => {
-                if (res == 'del') {
-                    delete this.chats[client.chatId].messages[client.messageId];
-                    message_gui.parent().delete();
+                if (res == 'del' || res == 'del_all') {
+                    if (res == 'del_all') {
+                        choosen_for_resend = need_resend;
+                    }
+                    choosen_for_resend.forEach(unsent => {
+                        delete this.chats[unsent.chatId].messages[unsent.messageId];
+                        this.unsentMessages(unsent.chatId).drop(unsent.messageId);
+                        this.remove_message(helper._('#' + unsent.messageId.toString()));
+                    })
+
                     this.bottomInfo('Deleted', 'success');
                 } else {
-                    if (!ac.checkBlock(s, client.chatId)) {
-                        message_gui.addClass('message-sending');
-                        d.removeClass('text-danger').html('--- ');
-                        rec.removeClass('text-danger').style({ cursor: 'unset' }).clicked(() => { return; }).html('pending');
+                    if (res == 'res_all') {
+                        choosen_for_resend = need_resend;
+                    }
 
-                        if (client.fileInfo != 0 && client.fileInfo.type != 'gif' && client.upload_this_file_first) {
-                            this.sendMessageFiles(client, true);
+                    start_resending();
+
+                    function start_resending(index = 0) {
+
+                        if (index >= choosen_for_resend.length) {
                             return;
                         }
 
-                        sw.sendMessage(client).then(resp => {
-                            this.messageSent(client, resp);
-                        }).catch(err => {
-                            this.messageSentFailed(client)
-                        })
+                        let mess = choosen_for_resend[index];
+                        let message_gui_ = helper._('#' + mess.messageId.toString())
+                        let d = message_gui_.lastChild.lastChild.firstChild
+                        let rec = message_gui_.lastChild.lastChild.lastChild
+                        if (!ac.checkBlock(s, mess.chatId)) {
+                            message_gui_.addClass('message-sending');
+                            d.removeClass('text-danger').html('--- ');
+                            rec.removeClass('text-danger').style({ cursor: 'unset' }).clicked(() => { return; }).html('pending');
+
+                            if (mess.fileInfo != 0 && mess.fileInfo.type != 'gif' && mess.upload_this_file_first) {
+                                self.sendMessageFiles(mess, true).catch(() => {
+                                    self.messageSentFailed(mess);
+                                }).finally(() => {
+                                    start_resending(index + 1);
+                                })
+                            } else {
+
+                                sw.sendMessage(mess).then(resp => {
+                                    self.messageSent(mess, resp);
+                                }).catch(err => {
+                                    self.messageSentFailed(mess)
+                                }).finally(() => {
+                                    start_resending(index + 1);
+                                })
+                            }
+                        }
                     }
+
                 }
-            }).catch(e => {});
+            }).catch(e => { console.log(e) });
         }).html('error_outline');
     } catch (err) {}
 }
@@ -208,6 +259,7 @@ export let addMessage = function(details, unprepared, file) {
                 let id_ = forwarding ? [] : unprepared.id.split('-');
                 let can_add_gui = (id_.length == 2 && id_[0] == 'quickreply' && id_[1].in(this.openedChats)) || prepared.chatId.in(this.openedChats);
                 if (can_add_gui) {
+                    prepared['status'] = 'sending';
                     this.addMessage(prepared);
                     this.chats[prepared.chatId].messages[prepared.messageId] = prepared;
                     this.chats[prepared.chatId].info.last_message = prepared
@@ -251,6 +303,9 @@ export let addMessage = function(details, unprepared, file) {
             if (details.hasOwnProperty('new_')) {
                 new_ = details.new_;
             }
+            if (details.hasOwnProperty('status') && details.status == 'failed') {
+                this.messageSentFailed(details)
+            }
             this.highlighChatHead(details, new_);
             delete details.new_;
         } catch (e) {
@@ -268,14 +323,18 @@ export let sendMessageFiles = function(textarea, resending) {
     let ind = 0;
     if (resending) {
         let file = textarea.upload_this_file_first;
-        sw.uploadMessageFile(file.file, s.id, file.type, (progress) => {}).then(uploaded => {
-            textarea.fileInfo.url = uploaded;
-            delete textarea.upload_this_file_first;
-            final_sending(textarea).then(() => {}).catch(err => {})
-        }).catch(err => {
-            self.messageSentFailed(textarea, true);
+        return new Promise((res, rej) => {
+
+            sw.uploadMessageFile(file.file, s.id, file.type, (progress) => {}).then(uploaded => {
+                textarea.fileInfo.url = uploaded;
+                delete textarea.upload_this_file_first;
+                final_sending(textarea).then(() => {
+                    res()
+                }).catch(err => { rej() })
+            }).catch(err => {
+                rej();
+            })
         })
-        this.state.needUpload = [];
     } else {
 
         return new Promise((res, rej) => {
@@ -458,6 +517,7 @@ export let loadMoreMessages = function(holder) {
 }
 
 export let refreshMessages = function(chat_id) {
+    let self = this;
     let s = this.settings;
     let recording = this.state.recording;
     let uploading = this.state.needUpload.length != 0;
@@ -494,23 +554,7 @@ export let refreshMessages = function(chat_id) {
         holder.truncate().addChild([df, load.self]);
         this.chats[chat_id].messages = {};
         if (resp.length > 0) {
-            resp.forEach(message => {
-                let gp = chat_id.split('_')[0] == 'group';
-                let di = typeof message.deleteInfo == 'string' ? JSON.parse(message.deleteInfo) : message.deleteInfo;
-                message.deleteInfo = di;
-                if ((gp && String(di.deleted).in(['2', '0'])) || (!gp && String(di[s.id]).in(['0', '2']))) {
-
-                    if ((message.dateSeen == '0' && !gp) && message.senderId != s.id) {
-                        this.updateInnerNotification(chat_id, false);
-                    }
-                    this.addMessage(message);
-
-                }
-                this.chats[chat_id].messages[message.messageId] = message;
-                this.chats[chat_id].info.last_message = message;
-            });
-
-            this.updateReceipt(chat_id);
+            arrange_messages(resp);
         }
         load.child(0).enable().clicked(() => {
             this.loadMoreMessages(holder)
@@ -520,7 +564,28 @@ export let refreshMessages = function(chat_id) {
     }).finally(() => {
         this.destroyMessageSelection();
         window.loading_messages_for = null;
+        let unsent = this.unsentMessages(chat_id).messages();
+        if (unsent.length > 0)
+            arrange_messages(unsent);
     })
+
+    function arrange_messages(messages) {
+        messages.forEach(message => {
+            let gp = chat_id.split('_')[0] == 'group';
+            let di = typeof message.deleteInfo == 'string' ? JSON.parse(message.deleteInfo) : message.deleteInfo;
+            message.deleteInfo = di;
+            if ((gp && String(di.deleted).in(['2', '0'])) || (!gp && String(di[s.id]).in(['0', '2']))) {
+
+                if ((message.dateSeen == '0' && !gp) && message.senderId != s.id) {
+                    self.updateInnerNotification(chat_id, false);
+                }
+                self.addMessage(message);
+
+            }
+            self.chats[chat_id].messages[message.messageId] = message;
+            self.chats[chat_id].info.last_message = message;
+        });
+    }
 }
 
 export let sendGIF = function(close) {

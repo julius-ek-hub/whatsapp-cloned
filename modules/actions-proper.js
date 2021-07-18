@@ -46,7 +46,7 @@ export function confirmOTP(btn, original, type) {
                     err.html('');
                     res()
                 } else {
-                    err.html('We do not recognize this PIN!');
+                    err.html('Unrecognized PIN');
                     btn.disabled = false;
                 }
             } else {
@@ -165,8 +165,6 @@ export function prepareUtilities(mainRoot, skip) {
             })
         })
     });
-
-
 }
 
 /* Check if user is still logged in with cookie */
@@ -335,18 +333,24 @@ export function detectMobileContextMenu(e) {
  * Producing message receipt
  */
 export function messageReceipt(details) {
+
     let receiptClass = '',
         receiptClassCss = ' material-icons-outlined';
-    if (details.isGroup == 1) {
-        receiptClass = details.dateSent != '0' ? 'done' : 'pending';
+    if (details.hasOwnProperty('status') && details.status == 'failed') {
+        receiptClass = 'error_outline';
+        receiptClassCss = receiptClassCss + ' text-danger'
     } else {
-        if (details.dateSeen != 0) {
-            receiptClass = 'done_all';
-            receiptClassCss = ' material-icons-outlined seen';
+        if (details.isGroup == 1) {
+            receiptClass = details.dateSent != '0' ? 'done' : 'pending';
         } else {
-            receiptClass = details.dateReceived != '0' ? 'done_all' :
-                details.dateSent != '0' ? 'done' :
-                'pending';
+            if (details.dateSeen != 0) {
+                receiptClass = 'done_all';
+                receiptClassCss = ' material-icons-outlined seen';
+            } else {
+                receiptClass = details.dateReceived != '0' ? 'done_all' :
+                    details.dateSent != '0' ? 'done' :
+                    'pending';
+            }
         }
     }
     return { receipt: receiptClass, receiptCss: receiptClassCss };
@@ -588,7 +592,7 @@ export function play_sound(whatsapp, kind, cid, stop) {
         check1 = whatsapp.settings.notification_sound == 1;
     }
     if (!cid.in(whatsapp.settings.muted_chats) && check1) {
-        try { whatsapp.sounds[kind].play(); } catch (e) {};
+        whatsapp.sounds[kind].play().catch(e => {})
     }
 }
 /**
@@ -671,20 +675,7 @@ export function deleteMessage(how, whatsapp, single) {
             messages[id].deleteInfo[m.isGroup == 1 ? 'deleted' : myid] = how;
             let mess = helper._('#' + id);
             if (how == 1 || how == 3) {
-                let box = mess.parent();
-                let psibling = helper._(box.self.previousSibling);
-                let nsibling = helper._(box.self.nextSibling);
-                box.delete();
-
-
-                if ((!nsibling && psibling.child(0).self.className.includes('m-date')) ||
-                    (nsibling && nsibling.child(0).self.className.includes('m-date') &&
-                        psibling.child(0).self.className.includes('m-date') &&
-                        psibling.self.previousSibling.childNodes[0].className.includes('security'))) {
-                    psibling.delete();
-                } else if (nsibling && nsibling.child(0).self.className.includes('m-date') && psibling.child(0).self.className.includes('m-date')) {
-                    psibling.delete();
-                }
+                whatsapp.remove_message(mess, whatsapp.openedChat);
 
             } else {
                 mess.addClass('deleted').truncate().addChild([
@@ -713,9 +704,9 @@ export function deleteMessage(how, whatsapp, single) {
     }
 
     function george() {
-        if (done > 0)
+        if (done > 0) {
             whatsapp.bottomInfo('Deleted ' + done, 'success');
-        else
+        } else
             whatsapp.bottomInfo(err_mess + 'Deleted 0', 'error');
     }
 

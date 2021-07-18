@@ -15,6 +15,8 @@ export let openProfile = function(chat_id) {
     let visibility = 'visible';
     let enter_toggle = 'toggle_off';
     let enter_toggle_class = 'text-muted';
+    let auto_toggle = 'toggle_off';
+    let auto_toggle_class = 'text-muted';
     if (chat_id) {
         visibility = 'hidden';
         i = this.chats[chat_id].info;
@@ -229,10 +231,11 @@ export let openProfile = function(chat_id) {
                     })
                 }
             }).catch(err => {})
-        } else if (id == 'profile_enterBTN') {
-            let val = settings.enter_button == 1 ? 0 : 1;
-            sw.updateProfile({ user: settings.id, cell: 'enter_button', value: val, chat: undefined }).then(() => {
-                settings.enter_button = val;
+        } else if (id == 'profile_enterBTN' || id == 'profile_autoR') {
+            let target = id == 'profile_enterBTN' ? 'enter_button' : 'auto_refresh_chat';
+            let val = settings[target] == 1 ? 0 : 1;
+            sw.updateProfile({ user: settings.id, cell: target, value: val, chat: undefined }).then(() => {
+                settings[target] = val;
                 if (val == 1) {
                     helper._('#' + id).removeClass('text-muted').addClass('text-primary').html('toggle_on');
                 } else {
@@ -241,7 +244,6 @@ export let openProfile = function(chat_id) {
 
                 self.bottomInfo('Updated was successfull!', 'success')
             }).catch(err => {
-                console.log(err)
                 self.bottomInfo('Update failed!', 'error')
             })
         }
@@ -648,6 +650,11 @@ export let openProfile = function(chat_id) {
             enter_toggle_class = 'text-primary';
         }
 
+        if (settings.auto_refresh_chat == 1) {
+            auto_toggle = 'toggle_on';
+            auto_toggle_class = 'text-primary';
+        }
+
     } else {
         all_dps.parent().parent().delete()
     }
@@ -960,6 +967,22 @@ export let openProfile = function(chat_id) {
         }).style({ visibility: visibility }).html('<span class="material-icons-outlined ' + enter_toggle_class + '" id = "profile_enterBTN">' + enter_toggle + '</span>').self
     ]);
 
+    let autoRefreshChat = helper.make_el('div').class('profile-values-container').addChild([
+        helper.make_el('div').html('<span class="material-icons-outlined">autorenew</span>').self,
+        helper.make_el('div').class('profile-values').addChild([
+            helper.make_el('span').html('Auto-refresh chat').self,
+            helper.make_el('div').class('text-muted').html(
+                'By toggling this on, whenever there seem to be an issue with a chat, it refreshes automatically. You can turn this off and refresh a chat manually when you want by going to the chat\'s menu'
+            ).self
+        ]).self,
+        helper.make_el('div').attr({
+            class: 'has_click_event',
+            onclick: () => {
+                edit_info('profile_autoR');
+            }
+        }).style({ visibility: visibility }).html('<span class="material-icons-outlined ' + auto_toggle_class + '" id = "profile_autoR">' + auto_toggle + '</span>').self
+    ]);
+
     let readRec = helper.make_el('div').class('profile-values-container').addChild([
         helper.make_el('div').html('<span class="material-icons-outlined">done_all</span>').self,
         helper.make_el('div').attr({
@@ -1178,6 +1201,7 @@ export let openProfile = function(chat_id) {
             mutedConts.self,
             wallPP.self,
             enterBtnEqualsSend.self,
+            autoRefreshChat.self,
             readRec.self,
             notiSound.self,
             otherSound.self,

@@ -62,8 +62,6 @@ export let friendId = function(chat_id) {
     return ids[0] == this.settings.id ? ids[1] : ids[0];
 }
 
-
-
 export let pauseRecording = function() {
     let allAudio = [].slice.call(document.querySelectorAll('div audio'));
     let wasPlayinBefore = allAudio.filter(audio => audio.paused == false);
@@ -94,6 +92,9 @@ export let check_delete = function(details) {
         if (del.deleted == 2 && si == my_id) {
             ret.message = ban_ic + '<i>You deleted this message</i>';
             ret.by = my_id;
+        } else if (del.deleted == 2 && si != my_id) {
+            ret.message = ban_ic + '<i>This message was deleted</i>';
+            ret.by = si;
         }
     } else {
         let my_dl = del[my_id];
@@ -153,16 +154,20 @@ export let highlighChatHead = function(details, new_) {
 export let resolveMinorIssues = function() {
     let oc = this.openedChat;
     return new Promise((res, rej) => {
-        if (oc == null || oc.split('_')[0] == 'group') {
+        if (oc == null) {
             res();
             return;
         }
-        let ms = this.chats[oc].messages;
-        for (let mid in ms) {
-            let gui = helper._('#' + mid).lastChild.lastChild.lastChild;
-            if (gui.htm() == 'done' && ms[mid].dateSeen != '0' && ms[mid].senderInfo.id == this.settings.id)
-                gui.addClass('seen').html('done_all');
-        }
+        let mss = Object.values(this.chats[oc].messages);
+        mss.forEach(ms => {
+            try {
+                let mid = ms.messageId;
+                let gui = helper._('#' + mid).lastChild.lastChild.lastChild;
+                if (gui.htm() == 'done' && ms.dateSeen != '0' && ms.senderInfo.id == this.settings.id)
+                    gui.addClass('seen').html('done_all');
+            } catch (e) {}
+        })
+
         res();
 
     });
@@ -738,78 +743,44 @@ export let shareActions = function(ik) {
 }
 
 export let add_public_user = function(btn) {
+    btn = helper._(btn).unfocus();
     let self = this;
     let s = this.settings;
-    let w = new helper.Modal();
-    let head = helper.make_el('div').style({
-        width: '100%',
-        background: 'rgba(0,0,0,0.05)',
-        textAlign: 'left',
-        padding: '8px'
-    }).addChild([
-        helper.make_el('span').html('Share your link, anyone who connects using your link becomes your friend...').self,
-        helper.make_el('div').class('add-public-user-links-container').addChild(this.shareActions(s.invitation_key)).self,
-        helper.make_el('div').style({ paddingTop: '8px' })
-        .html('Or add pucblic users...<span class="float-right text-muted">').self
-    ]);
-    let usersContainer = helper.make_el('div')
-        .class('add-public-user-links-container').addChild([
-            helper.make_el('table').setWidth('100%').class('table-public-users').html('<tbody></tbody>').self,
-            helper.make_el('button').attr({
-                class: 'btn btn-light',
-                style: {
-                    fontSize: 'medium',
-                    padding: '6px'
-                },
-                onclick: () => {
-                    getUsers();
-                }
-            }).self
-        ])
-    let body = helper.make_el('div').style({
-        padding: '5px',
-        textAlign: 'left',
-        overflowY: 'auto'
-    }).addChild(usersContainer.self);
-
-    let foot = helper.make_el('div').addChild(
-        helper.make_el('button').attr({
-            class: 'btn btn-light float-right',
-            onclick: () => {
-                w.close();
-                helper._(btn).enable();
-            }
-        }).html('OK').self
-    );
-
-    let bodyM = helper.make_el('div').style({
-        background: 'white',
-        display: 'inline-block',
-        borderRadius: '8px'
-    }).addChild([
-        head.self,
-        body.self,
-        foot.self
+    let loadmore = 'Load more...';
+    let loading = 'Please wait... <i class="fa fa-spinner fa-pulse"></i>';
+    let tab = helper.make_el('table').class('table-public-users w-100');
+    let alt = helper.make_el('div').class('add-public-user-links-container').addChild(this.shareActions(s.invitation_key));
+    let loader = helper.make_el('button').attr({
+        class: 'btn btn-light',
+        style: {
+            fontSize: 'medium',
+            padding: '6px'
+        },
+        onclick: () => {
+            getUsers();
+        }
+    }).html(loading);
+    let container = helper.make_el('div').addChild([
+        helper.make_el('div').class('h4').html('Add Public Chat').self,
+        helper.make_el('hr').self,
+        alt.self,
+        helper.make_el('hr').self,
+        tab.html('<tbody></tbody>').self,
+        loader.self
     ])
-    w.add_content(bodyM.self);
-    let structurize = function() {
-        body.style({ maxHeight: (innerHeight - 200) + 'px' });
-        if (innerWidth < 700)
-            bodyM.setWidth((innerWidth - innerWidth % 50) + 'px')
-        else
-            bodyM.setWidth('700px')
-    }
-    structurize();
-    window.resize_callbacks.push(structurize)
-    w.open();
-    helper._(btn).disable();
+    this.Alert({
+        body: container.self,
+        width: 50,
+        direction: 'bottom',
+        buttonRight: '',
+        cancelText: 'Done',
+    })
 
-    if (!window.available_public_chats || window.available_public_chats == undefined) {
-        window.available_public_chats = [];
-    }
+
+    let available_public_chats = [];
 
     function addUser(user) {
-        usersContainer.child(0).child(0).addChild(
+        tab.child(0).addChild(
             helper.make_el('tr').addChild([
                 helper.make_el('td').setWidth('50px').addChild(
                     helper.make_el('img').attr({
@@ -836,35 +807,24 @@ export let add_public_user = function(btn) {
                 }).html('Add to chats').self).self
             ]).self
         )
-        window.available_public_chats.push(user);
+        available_public_chats.push(user);
     }
 
     function getUsers() {
 
-        let last = window.available_public_chats;
-        last = last.length == 0 ? 0 : Math.max(...last.map(el => { return Number(el.id) }));
+        let last = available_public_chats.length == 0 ? 0 : Math.max(...available_public_chats.map(el => { return Number(el.id) }));
 
-        usersContainer.child(1).html('Please wait... <i class="fa fa-spinner fa-pulse"></i>');
+        loader.html(loading).disable();
         sw.getPublicUsers(s.id, last).then(res => {
-
-            if (res.length > 0) {
-                res.forEach(u => { addUser(u) });
-                usersContainer.child(1).html('Load more...')
-            } else {
-                usersContainer.child(1).addClass('text-danger').html('<i class="fa fa-warning"></i> No more chats to load!')
-            }
-
+            res.forEach(u => { addUser(u) });
         }).catch(err => {
             self.bottomInfo('Connection Error', 'error')
+        }).finally(() => {
+            loader.html(loadmore).enable();
         })
     }
 
-    let last = window.available_public_chats;
-    if (last.length > 0) {
-        last.forEach(u => { addUser(u) });
-        usersContainer.child(1).html('Load more...')
-    } else
-        getUsers();
+    getUsers();
 }
 
 export let reportChat = function(chat, from, about) {

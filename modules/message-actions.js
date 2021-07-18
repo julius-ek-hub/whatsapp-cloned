@@ -136,7 +136,7 @@ export let destroyMessageSelection = function() {
 export let actOnMessage = function(target, message_id) {
     let s = this.settings;
     let details = this.chats[this.openedChat].messages[message_id];
-    if (this.state.selecting.selecting == true ||
+    if (this.state.selecting.selecting ||
         message_id.split('_sn_')[0] != this.openedChat ||
         (details.isGroup == 1 && details.senderId != s.id && details.deleteInfo.deleted == 2)) {
         return;
@@ -284,7 +284,7 @@ export let forwardMessages = function() {
 export let copyMessage = function(details) {
         let fi = details.fileInfo;
         let text = typeof details == 'object' ? (details.message == '' ? fi.type == 'gif' ? fi.url : `${this.mainRoot}file-viewer?f=${`${this.root}/visitors/${details.senderId}/${fi.type == 'picture' ? 'Pictures' : 'Recordings'}/${fi.url}`.to_b64()}` : details.message) : details;
-    helper.copy(text.unescape());
+    helper.copy(text.unescape(true).split('\n').map(el => {return el.trim()}).join(' ')); 
     this.bottomInfo('Copied to clipboard...', 'success');
 }
 export let shareMessage = function(details) {
@@ -511,5 +511,27 @@ export let recordIndicator = function(e) {
                 this.mediaErrorAnnounce('m');
             }
         }).catch(() => { this.askMediaPermission('m'); })
+    }
+}
+
+export let remove_message = function(mess){
+    let box = mess.parent();
+    let psibling = false;
+    let nsibling = false
+    if (box.has_nextSibling) {
+       nsibling = box.nextSibling;
+    }
+    if (box.has_previousSibling) {
+        psibling = box.previousSibling
+    }
+    box.delete();
+     
+    if ((!nsibling && psibling.child(0).classList.includes('m-date')) ||
+        (nsibling && nsibling.child(0).classList.includes('m-date') &&
+            psibling.child(0).classList.includes('m-date') &&
+            psibling.previousSibling.child(0).className.includes('security'))) {
+        psibling.delete();
+    } else if (nsibling && nsibling.child(0).classList.includes('m-date') && psibling.child(0).classList.includes('m-date')) {
+        psibling.delete();
     }
 }

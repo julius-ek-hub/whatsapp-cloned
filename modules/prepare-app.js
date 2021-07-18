@@ -241,13 +241,16 @@ export let realLaunching = function(id, welcome) {
     this.launchHome();
     welcome.destroy();
     this.checkIncomingCall();
+
     let must_always_be_updated = [
         () => this.checkNewMessages(),
         () => this.check4MessageUpdates(),
         () => this.checkLastSeen(),
         () => sw.updateLastSeen(id, this.settings.public_last_seen),
         () => this.checkTyping(),
-        () => this.updateChatsInfo()
+        () => this.updateChatsInfo(),
+        () => this.updateReceipt(),
+        () => this.resolveMinorIssues()
     ];
     window.interval_functions = [];
     must_always_be_updated.forEach(cb => {
@@ -396,4 +399,53 @@ export let launchHome = function() {
     if (id != '0001' && chats[c_id].info.last_message.senderId == null) {
         this.autoWelcomeMessage(c_id)
     }
+}
+
+export let unsentMessages = function(chatId) {
+    let handler = {};
+    // localStorage.clear()
+    let get = () => {
+        return localStorage.getItem(chatId);
+    }
+
+    handler['exists'] = () => {
+        return get() != null;
+    }
+
+    handler['messages'] = () => {
+        return handler.exists() ? get().parse() : [];
+    }
+
+    handler['add'] = (details) => {
+        let old = handler.messages();
+        if (!old.some(m_ => { return m_.messageId == details.messageId })) {
+            old.push(details);
+        }
+
+        handler.update(old)
+
+    }
+
+    handler['update'] = function(new_) {
+        try {
+            localStorage.setItem(chatId, JSON.stringify(new_))
+        } catch (e) {
+            handler.drop();
+            localStorage.setItem(chatId, JSON.stringify(new_))
+        }
+    }
+
+    handler['drop'] = (messageId) => {
+        if (messageId) {
+            let old = handler.messages();
+            old.removeIf(mess => { return mess.messageId == messageId });
+            handler.update(old);
+        } else
+            localStorage.removeItem(chatId);
+    }
+
+    handler['get'] = get;
+
+
+    return handler;
 }

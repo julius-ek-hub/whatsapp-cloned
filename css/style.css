@@ -1065,6 +1065,9 @@ Calling Makeup
     background: whitesmoke;
 }
 
+
+/* public users */
+
 .add-public-user-links-container {
     width: 100%;
     overflow-x: auto;
@@ -1116,6 +1119,9 @@ a.round-btn {
 .btn-primary:hover {
     background: rgb(37, 211, 102);
 }
+
+
+/* profile */
 
 .profile-values-container {
     display: flex;

@@ -450,6 +450,10 @@ String.prototype.to_b64 = function() {
     return window.btoa(unescape(encodeURIComponent(this)));
 }
 
+String.prototype.parse = function() {
+    return JSON.parse(this);
+}
+
 String.prototype.escape = function() {
     if (this.length == '') {
         return this;
@@ -491,7 +495,7 @@ String.prototype.unescape = function(html) {
         }).join('').replace(/\\'/g, "'");
 
         if (html)
-            final.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+            final = final.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
     }
     return final;
 }

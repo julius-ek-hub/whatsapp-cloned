@@ -337,6 +337,7 @@ function group_delete($mid, $senderId){
               notification_sound boolean DEFAULT 0,
               other_sounds boolean DEFAULT 0,
               enter_button boolean DEFAULT 0,
+              auto_refresh_chat boolean DEFAULT 1,
               public_last_seen boolean DEFAULT 1,
               removed boolean DEFAULT 0,
               PRIMARY KEY (sn)

@@ -504,7 +504,6 @@ export let openChat = function(id) {
 
         structurize();
         window.resize_callbacks.push(structurize);
-        this.updateReceipt(id);
     } catch (err) {
         let d = this.ChatBox(chat_details);
         helper._(chat_details.bodyContent).child(0).lastChild.clicked(() => {
@@ -521,23 +520,7 @@ export let openChat = function(id) {
         sw.loadMessages(info.chat_id, s.id, { max: '', refreshing: '' }).then(resp => {
             if (resp.length > 0) {
                 if (resp.length < 10) { all_m.child(1).hide(); }
-                resp.forEach(message => {
-                    let gp = info.chat_id.split('_')[0] == 'group';
-                    let di = typeof message.deleteInfo == 'string' ? JSON.parse(message.deleteInfo) : message.deleteInfo;
-                    message.deleteInfo = di;
-                    if ((gp && String(di.deleted).in(['2', '0'])) || (!gp && String(di[s.id]).in(['0', '2']))) {
-
-                        if ((message.dateSeen == '0' && !gp) && message.senderId != s.id) {
-                            self.updateInnerNotification(message.chatId, false);
-                        }
-                        self.addMessage(message);
-
-                    }
-                    chat.messages[message.messageId] = message;
-                    chat.info.last_message = message;
-                });
-
-                this.updateReceipt(id);
+                arrange_messages(resp)
             } else {
                 all_m.child(1).hide();
             }
@@ -546,7 +529,29 @@ export let openChat = function(id) {
             all_m.child(1).child(0).enable().clicked(() => {
                 this.loadMoreMessages(all_m);
             }).child(0).removeClass('spin');
+            let unsent = this.unsentMessages(info.chat_id).messages();
+            if (unsent.length > 0)
+                arrange_messages(unsent);
         })
+
+
+        function arrange_messages(messages) {
+            messages.forEach(message => {
+                let gp = info.chat_id.split('_')[0] == 'group';
+                let di = typeof message.deleteInfo == 'string' ? JSON.parse(message.deleteInfo) : message.deleteInfo;
+                message.deleteInfo = di;
+                if ((gp && String(di.deleted).in(['2', '0'])) || (!gp && String(di[s.id]).in(['0', '2']))) {
+
+                    if ((message.dateSeen == '0' && !gp) && message.senderId != s.id) {
+                        self.updateInnerNotification(message.chatId, false);
+                    }
+                    self.addMessage(message);
+
+                }
+                chat.messages[message.messageId] = message;
+                chat.info.last_message = message;
+            });
+        }
 
     }
     this.unhighlighChatHead(id);

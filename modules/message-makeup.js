@@ -58,8 +58,10 @@ export let buildMessageGUI = function(details, what, idInner) {
             date = new Date(d).format('h:ia') + ' ';
         }
 
-        message_content.push(mess_menu.self)
+        message_content.push(mess_menu.self);
+
         let deleted = this.check_delete(details);
+
         if (deleted.deleted) {
             message_content.push(helper.make_el('span').class('text-muted ml-4').html(deleted.message).self);
         } else {
@@ -121,8 +123,6 @@ export let buildMessageGUI = function(details, what, idInner) {
             }
             if (!(details.fileInfo == '0' || details.fileInfo == 0)) {
 
-                details.senderInfo.dp = this.dp(details.senderInfo.dp, details.senderId);
-
                 if (typeof details.fileInfo == 'string') {
                     details.fileInfo = JSON.parse(details.fileInfo);
                 }
@@ -168,13 +168,13 @@ export let buildMessageGUI = function(details, what, idInner) {
             if (messBox.Id.split('_sn_').length == 1) { return }
 
             if (this.state.selecting.selecting) {
-                self.createMessageSelection(messBox.Id);
+                this.createMessageSelection(messBox.Id);
             } else {
                 if (firstClick == 0) {
                     firstClick = new Date().getTime();
                 } else {
                     if ((new Date().getTime() - firstClick) / 1000 <= 0.3) {
-                        self.actOnMessage(e, messBox.Id);
+                        this.actOnMessage(e, messBox.Id);
                     }
                     firstClick = 0;
                 }
@@ -188,8 +188,8 @@ export let buildMessageGUI = function(details, what, idInner) {
         if (this.state.selecting.selecting) {
             return;
         }
-        self.actOnMessage(e, messBox.Id);
-    })
+        this.actOnMessage(e, messBox.Id);
+    });
 
     return message_container;
 }
@@ -244,7 +244,7 @@ export let buildMedia = function(details) {
             .addChild(helper.make_el('tr').addChild([
                 helper.make_el('td').style({ position: 'relative' }).addChild([
                     helper.make_el('img').attr({
-                        src: details.senderInfo.dp,
+                        src: this.dp(details.senderInfo.dp, details.senderId),
                         class: 'dp'
                     }).self,
                     helper.make_el('i').class('fa fa-microphone').style({

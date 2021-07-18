@@ -16,24 +16,18 @@ export let checkNewMessages = function() {
                 window.location.reload();
             }
             let chatIds = Object.keys(resp);
-            let chat_index = 0;
 
             work_on_chat_id();
 
-            function work_on_chat_id() {
+            function work_on_chat_id(chat_index = 0) {
 
                 let chatId = chatIds[chat_index];
                 if (chat_index >= chatIds.length) {
-                    self.resolveMinorIssues().then(() => {
-                        res();
-                    }).catch(err => {
-                        res();
-                    })
+                    res()
                     return;
                 }
                 if (ac.checkBlock(s, chatId, 'reply')) {
-                    chat_index++;
-                    work_on_chat_id();
+                    work_on_chat_id(chat_index + 1);
                     return;
                 }
 
@@ -44,12 +38,8 @@ export let checkNewMessages = function() {
                         self.chats[res.chat_id] = { info: res, messages: {} };
 
                         self.prepareChat({ info: res, messages: {} });
-
-                        chat_index++;
-                        work_on_chat_id();
-                    }).catch(err => {
-                        chat_index++;
-                        work_on_chat_id();
+                    }).finally(err => {
+                        work_on_chat_id(chat_index + 1);
                     });
 
                     return;
@@ -60,38 +50,38 @@ export let checkNewMessages = function() {
                 let newMessages = resp[chatId];
 
                 if (newMessages.length == 0) {
-                    chat_index++;
-                    work_on_chat_id();
+                    work_on_chat_id(chat_index + 1);
                     return;
                 }
+
                 newMessages.forEach(message => {
                     message.dateReceived = new Date().UTC_DATE();
                     message['new_'] = true;
-                    let lastMess = self.chats[chatId].info.last_message;
-                    try {
+                    if (chatId.in(self.openedChats)) {
                         self.updateInnerNotification(chatId, false);
-
-                        self.addMessage(message)
-                        self.chats[chatId].messages[message.messageId] = message;
-                        let MessagesBox = helper._('#chatBox-' + chatId).child(0).child(1).self;
-                        let lastMessageBefore = helper._('#' + lastMess.messageId).parent().self;
-                        if (Math.abs((MessagesBox.scrollTop + MessagesBox.clientHeight) - (lastMessageBefore.offsetTop + lastMessageBefore.clientHeight)) < innerHeight / 2.1) {
-                            helper.scroll_to(lastMessageBefore, 'smooth', lastMessageBefore.parentElement);
-                        }
+                        self.addMessage(message);
+                        try {
+                            let lastMess = self.chats[chatId].info.last_message;
+                            let MessagesBox = helper._('#chatBox-' + chatId).child(0).child(1).self;
+                            let lastMessageBefore = helper._('#' + lastMess.messageId).parent().self;
+                            if (Math.abs((MessagesBox.scrollTop + MessagesBox.clientHeight) - (lastMessageBefore.offsetTop + lastMessageBefore.clientHeight)) < innerHeight / 2.1) {
+                                helper.scroll_to(lastMessageBefore, 'smooth', lastMessageBefore.parentElement);
+                            }
+                        } catch (e) {}
                         if (self.openedChat == chatId) {
                             ac.play_sound(self, 'receivedIn', chatId);
-                            self.updateReceipt(chatId);
                         } else {
                             ac.play_sound(self, 'receivedOut', chatId);
                         }
-                    } catch (error) {
+                        self.chats[chatId].messages[message.messageId] = message;
+                    } else {
                         self.highlighChatHead(message, true);
                         ac.play_sound(self, 'receivedOut', chatId);
                     }
                     self.chats[chatId].info.last_message = message;
-                    chat_index++;
-                    work_on_chat_id();
                 })
+                self.chats[chatId].info.last_message = message;
+                work_on_chat_id(chat_index + 1);
             }
         }).catch(err => {
             //Error checking messages
@@ -100,20 +90,35 @@ export let checkNewMessages = function() {
     })
 }
 
-export let updateReceipt = function(chatId) {
+export let updateReceipt = function() {
+    let self = this;
     let s = this.settings;
-    if (s.read_receipt == 0) {
-        return;
-    }
-    let messages = this.chats[chatId].messages;
-    for (let m in messages) {
-        let mess = messages[m];
-        if ((mess.dateSeen == '0' || chatId.split('_')[0] == 'group') && mess.senderId != s.id) {
-            sw.updateReceipt(chatId, mess.messageId, s.id).then(resp => {
-                mess.dateSeen = resp;
-            });
+    let chatId = this.openedChat;
+    return new Promise((res, rej) => {
+        if (s.read_receipt == 0 || chatId == null) {
+            res();
+            return;
         }
-    }
+        let messages = Object.values(this.chats[chatId].messages);
+        let update_ = (index = 0) => {
+            if (index >= messages.length) {
+                res();
+                return;
+            }
+            let mess = messages[index];
+            if ((mess.dateSeen == '0' || chatId.split('_')[0] == 'group') && mess.senderId != s.id) {
+                sw.updateReceipt(chatId, mess.messageId, s.id).then(resp => {
+                    self.chats[chatId].messages[mess.messageId].dateSeen = resp;
+                }).finally(() => {
+                    update_(index + 1);
+                });
+            } else {
+                update_(index + 1);
+            }
+        }
+        update_();
+
+    })
 }
 
 export let check4MessageUpdates = function() {
@@ -363,15 +368,13 @@ export let checkLastSeen = function() {
 export let updateChatsInfo = function() {
     let chat_ids = Object.keys(this.chats);
     let self = this;
-
     return new Promise((res, rej) => {
         if (chat_ids.length < 1) {
             res()
             return;
         }
-        let index = 0;
 
-        function check() {
+        function check(index = 0) {
             if (index >= chat_ids.length) {
                 res();
                 return;
@@ -386,7 +389,7 @@ export let updateChatsInfo = function() {
                     (lm.dateSeen == 0 && lm_.dateSeen != 0)) {
                     self.highlighChatHead(lm_);
                 }
-                if (!newInfo.available_db_mess.every(el => el.messageId.in(Object.keys(ms)))) {
+                if (!newInfo.available_db_mess.every(el => el.messageId.in(Object.keys(ms))) && self.settings.auto_refresh_chat == 1) {
                     self.refreshMessages(chat_id);
                 }
                 if (ci.dp != newInfo.dp) {
@@ -410,11 +413,9 @@ export let updateChatsInfo = function() {
                 }
 
                 try { self.chats[chat_id].info = newInfo; } catch (e) {}
-                index++;
-                check();
-            }).catch(e => {
-                index++;
-                check();
+
+            }).finally(e => {
+                check(index + 1);
             })
         }
         check();

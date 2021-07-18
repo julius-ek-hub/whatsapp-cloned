@@ -18,7 +18,7 @@ $(document).ready(() => {
     let w = new WhatsAppClone();
     w.init();
     w.addProperties({ mainRoot: 'http://localhost/whatsapp-clone/' });
-    w.addProperties({ root: w.mainRoot });
+    w.addProperties({ root: 'http://localhost/whatsapp-clone/' });
     let welcome = w.welcomeScreen();
     welcome.launch();
     getAllCountries().then(resp => {
@@ -34,6 +34,7 @@ $(document).ready(() => {
                 defaultBg: w.root + 'images/default-bg.jpg',
                 openedChat: null,
                 openedChats: [],
+                messages_loaded: [],
                 state: {
                     replyingTo: 0,
                     recording: false,

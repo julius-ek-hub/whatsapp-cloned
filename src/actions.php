@@ -70,7 +70,7 @@ elseif (isset($_POST['user_info']) && isset($_POST['invitation_code'])) {
 		
 	}
 	$db->exec("UPDATE visitors SET lastseen = '$ls' WHERE id = '$id'");
-	$userInfo = $db->exec("SELECT id, username, dp, tel, name_col, email, email_confirmed, mail_confirmation_code, about, country, account_type, read_receipt, public_last_seen, date_joined, notification_sound, other_sounds, enter_button, wallpaper, invitation_key, removed FROM visitors WHERE id = '$id'")->fetch_assoc();
+	$userInfo = $db->exec("SELECT id, username, dp, tel, name_col, email, email_confirmed, mail_confirmation_code, about, country, account_type, read_receipt, public_last_seen, date_joined, notification_sound, other_sounds, enter_button, auto_refresh_chat, wallpaper, invitation_key, removed FROM visitors WHERE id = '$id'")->fetch_assoc();
 	$userInfo['blocked_chats'] = $db->blocked_or_muted_chats('block', $id);
 	$userInfo['muted_chats'] = $db->blocked_or_muted_chats('mute', $id);
 	$userInfo['blocked_by'] = $db->blocked_or_muted_chats('blocked_by', $id);
