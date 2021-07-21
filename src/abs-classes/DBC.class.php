@@ -8,7 +8,7 @@ class MySQLException extends Exception{}
 class PreparedStatementException extends MySQLException{}
 class DBC extends PreparedStatementException{ 
 	protected $dbc;	
-function __construct($CONN){
+ function __construct($CONN){
 	$host = $CONN['HOST'];
 	$dbuser = $CONN['DBUSER'];
 	$dbname = $CONN['DBNAME'];
@@ -16,7 +16,7 @@ function __construct($CONN){
 	$this->dbc = new mysqli($host, $dbuser, $password);
 	$this->dbc->query("CREATE DATABASE IF NOT EXISTS $dbname");
 	$this->dbc = new mysqli($host, $dbuser, $password, $dbname);
-}
+ }
 function exec($query){
 	$sql = $this->dbc->query($query);
 	if ($sql)
