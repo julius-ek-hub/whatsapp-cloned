@@ -15,11 +15,12 @@ import { prepareUtilities, loggedIn } from './modules/actions-proper.js';
 
 $(document).ready(() => {
 
+    let login = loggedIn();
     let w = new WhatsAppClone();
     w.init();
     w.addProperties({ mainRoot: 'http://localhost/whatsapp-clone/' });
     w.addProperties({ root: 'http://localhost/whatsapp-clone/' });
-    let welcome = w.welcomeScreen();
+    let welcome = w.welcomeScreen(login ? 'Loading' : 'Welcome');
     welcome.launch();
     getAllCountries().then(resp => {
         prepareUtilities(w.mainRoot, welcome.skip).finally(() => {
@@ -61,14 +62,15 @@ $(document).ready(() => {
              * We check if there is an existing user for this browser
              */
 
-            if (loggedIn()) {
-                getUser(loggedIn()).then(resp => {
+            if (login) {
+                getUser(login).then(resp => {
                     w.setEnvironment(resp, welcome);
                 }).catch(() => {
                     //Probably there are some browser storage issues
                     w.Alert('<div class="text-danger h5" style="padding: 10px;background:rgba(255,0,0,0.2)">' +
                         '<i class="fa fa-warning"></i> Something is not right!,</div>' +
                         '<p>Try clearing your browser\'s cookies and cached files.</p>');
+                    welcome.failed();
                 })
             } else {
                 welcome.destroy(1000);
@@ -115,8 +117,7 @@ $(document).ready(() => {
 
 
     }).catch(err => {
-
-        console.error(err)
+        welcome.failed(err);
         w.bottomInfo('Connection failed!', 'error')
     })
 })

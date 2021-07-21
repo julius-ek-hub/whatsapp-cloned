@@ -163,7 +163,6 @@ export function getChats(id) {
         }).then(response => {
             res(JSON.parse(response))
         }).catch(err => {
-            console.log(err)
             rej(err)
         })
     })

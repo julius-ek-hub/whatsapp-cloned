@@ -225,6 +225,8 @@ export let setEnvironment = function(details, welcome) {
                 sw.getChatInfo(id, self.settings.id).then(info => {
                     self.chats[info.chat_id] = { info: info, messages: {} }
                     getInfo(ind + 1);
+                }).catch(e => {
+                    welcome.failed("Could not load chat informations properly")
                 })
             }
 
@@ -234,6 +236,8 @@ export let setEnvironment = function(details, welcome) {
             this.realLaunching(details.id, welcome)
         }
 
+    }).catch(err => {
+        welcome.failed(err)
     })
 }
 

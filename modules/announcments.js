@@ -120,7 +120,16 @@ export let welcomeScreen = function(message = 'Welcome') {
     ]).self
 
     let body = helper.make_el('div').addChild([top, middle, bottom]).self
-    wn.add_content(body)
+    wn.add_content(body);
+
+    let failed = function(message = "Loading Failed") {
+        middle.truncate().addChild([
+            make_el('div').class('h2 text-danger').html(message).delf,
+            make_el('button').class('btn btn-light').clicked(() => {
+                window.location.reload();
+            }).html('Reload').self
+        ])
+    }
 
     return {
         launch: () => { wn.open(); },
@@ -133,7 +142,8 @@ export let welcomeScreen = function(message = 'Welcome') {
                 wn.close()
             }
         },
-        skip: skip
+        skip: skip,
+        failed: failed
     }
 }
 
