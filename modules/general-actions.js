@@ -100,7 +100,7 @@ export let check_delete = function(details) {
         let my_dl = del[my_id];
         let fr_id = this.friendId(details.chatId);
         let fr_dl = del[fr_id];
-        if (my_dl != 0 || fr_dl != 0) {
+        if (my_dl == 2 || fr_dl == 2 || fr_dl == 3) {
             ret.deleted = true;
         }
         if (my_dl == 2 && si == my_id) {
@@ -785,7 +785,8 @@ export let add_public_user = function(btn) {
                 helper.make_el('td').setWidth('50px').addChild(
                     helper.make_el('img').attr({
                         src: self.dp(user.dp, user.id),
-                        class: 'dp'
+                        class: 'dp',
+                        onclick: (e) => { new helper.Modal().expandElement(e.target) }
                     }).self
                 ).self,
 

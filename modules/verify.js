@@ -181,9 +181,12 @@ export let Verify = function() {
     }
     let show_pin = () => {
         setTimeout(() => {
-            self.Alert('Your PIN for this entire project is <b>' +
-                info.pin + '</b>. You have to use it with your phone number when next you are asked to login.' +
-                ' Do not share it with anyone! Could be changed later if only you provide an email', 50, 'bottom')
+            self.Alert({
+                body: `Your PIN for this entire project is <b> 
+                ${info.pin} </b>. You have to use it with your phone number when next you are asked to login.
+                 Do not share it with anyone! Could be changed later if only you provide an email`,
+                cancelText: 'Got it'
+            })
         }, 2000);
     }
     let confirmOTP = function() {
@@ -390,7 +393,8 @@ export let Verify = function() {
                                                    Check your email, it should be there in less 
                                                    than 5 minutes else click to resend the email.`),
                                             width: 70,
-                                            direction: 'bottom'
+                                            direction: 'bottom',
+                                            cancelText: 'Got it'
                                         });
                                     }).catch(err => {
                                         ld.loader.close();

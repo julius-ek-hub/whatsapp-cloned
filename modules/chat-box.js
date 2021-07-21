@@ -507,10 +507,12 @@ export let openChat = function(id) {
     } catch (err) {
         let d = this.ChatBox(chat_details);
         helper._(chat_details.bodyContent).child(0).lastChild.clicked(() => {
-            this.Alert(
-                'The messages are somehow secured through in-built front and back end encoding and decoding, ' +
-                'escaping and unescaping methods with my front end html escaping Sting prototype <code>String.escape()</code>'
-            )
+            this.Alert({
+                body: `<div class="text-center"><span class="material-icons-outlined d-block">priority_high</span></div>
+                 Be careful of what you share, no sensitive information. The security is just in favour of my database. The messages
+                 you share are saved in my DB for your future access, Please don't share private or sensitive details. Thanks!`,
+                cancelText: 'Got it'
+            })
         })
         d.launch();
         this.openChat(id)
