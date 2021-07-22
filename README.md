@@ -26,10 +26,10 @@ define('CONN', array(
 
 The Database enviroment would be dynamically created from your values above. Make sure not to use a Database name (`DBNAME`) that already exists else its not a problem though because it'll use the one you have created, just make sure it is void of tables so you don't get confused or it contains a table that the project may at one time try to create in the database dynamically thereby causing errors.
 
-4. If you want mailing to function, like when user reports, rates, adds email etc. The you need to do some stuffs.
+4. If you want mailing to function, like when user reports, rates, adds email etc. Then you need to do some stuffs.
 
 - First if you don't have a composer installed in your machine, you need to download it [here](https://getcomposer.org/Composer-Setup.exe "Get composer") and install then...
-- Open your command prompt/command line as administrator then change directory upto ./composer folder in the project then type `composer require phpmailer/phpmailer` to install phpmailer in the composer directory. Having issues? [Read this](https://github.com/PHPMailer/PHPMailer "phpmailer") or [Contact Me](https://wa.me/971566366808)
+- Open your command prompt/line as administrator then change directory upto ./composer folder in the project or if you use vscode, then open the composer folder in the integrated terminal. In either ways, type `composer require phpmailer/phpmailer` to install phpmailer in the composer directory. Having issues? [Read this](https://github.com/PHPMailer/PHPMailer "phpmailer") or [Contact Me](https://wa.me/971566366808)
 - Edit the `MAILER` in [src/Config.php](https://github.com/julius-ek-hub/whatsapp-clone/blob/99d0f42603434ac06142498875077ad2291aa01d/src/Config.php#L23 "MAILER") with your credentials. This is where you will be extracting your `from` addresses. When you send an email from the client (JS), the `from` property would only accept any of admin, info, no_rep .... You can add more emails if you have, following the same order and then refer to it from the client side using the main property and the rest will be automatically taken.
 - To send from a Gmail account, you need to take the following steps.
 
@@ -62,7 +62,7 @@ The Database enviroment would be dynamically created from your values above. Mak
 
 5. If you want to host this project on a life server, then
 
-   - You need to have your own copy of fontawesome link. If you don't have a copy, then [register with Font Awesome](https://fontawesome.com/start "font awesome") by providing only email to acquire an absolutely free link for the project. Replace [this link](https://github.com/julius-ek-hub/whatsapp-clone/blob/99d0f42603434ac06142498875077ad2291aa01d/src/Config.php#L93 "font awesome") with the one you get. Make sure its Font Awesome 5. Your link would look like below
+   - You need to have your own copy of fontawesome link. If you don't have a copy, then [register with Font Awesome](https://fontawesome.com/start "font awesome") by providing only email to acquire an absolutely free link for the project. Replace the link in [src/Config.php](https://github.com/julius-ek-hub/whatsapp-clone/blob/99d0f42603434ac06142498875077ad2291aa01d/src/Config.php#L93 "font awesome link") with the one you get. Make sure its Font Awesome 5. Your link would look like below
 
    ```html
    <script
@@ -80,15 +80,11 @@ The Database enviroment would be dynamically created from your values above. Mak
 
 ## Gallery
 
-- Registration
-
-![Select your country](https://www.247-dev.com/projects/whatsapp-clone/images/233eee.png "Countries")
-
 - App - Large screen
 
 ![App - large screen](https://www.247-dev.com/projects/whatsapp-clone/images/preview-1.png)
 
-- App small screen
+- App - Small screen
 
 ![App - small screen](https://www.247-dev.com/projects/whatsapp-clone/images/fdvdfvdf.png)
 
