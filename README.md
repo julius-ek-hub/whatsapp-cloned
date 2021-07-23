@@ -78,7 +78,7 @@ The Database enviroment would be dynamically created from your values above. Mak
 8. Change `receipients` value in [modules/general-actions.js Line 913](https://github.com/julius-ek-hub/whatsapp-clone/blob/99d0f42603434ac06142498875077ad2291aa01d/modules/general-actions.js#L913 "searchGIF") to your preferred email address. This could be any address. If you don't want to receive email when a user reports someone, then you can change this function to send it to your database instead for later review.
 9. Change the value of `mainRoot` in [./app.js Line 21](https://github.com/julius-ek-hub/whatsapp-clone/blob/99d0f42603434ac06142498875077ad2291aa01d/app.js#L21 "mainRoot") to match the name of the the root directory parenting the entire project.
 
-## Gallery
+## Preview
 
 - App - Large screen
 

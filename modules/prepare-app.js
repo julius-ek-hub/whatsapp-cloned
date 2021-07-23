@@ -244,7 +244,6 @@ export let setEnvironment = function(details, welcome) {
 export let realLaunching = function(id, welcome) {
     this.launchHome();
     welcome.destroy();
-    this.checkIncomingCall();
 
     let must_always_be_updated = [
         () => this.checkNewMessages(),
@@ -254,7 +253,8 @@ export let realLaunching = function(id, welcome) {
         () => this.checkTyping(),
         () => this.updateChatsInfo(),
         () => this.updateReceipt(),
-        () => this.resolveMinorIssues()
+        () => this.resolveMinorIssues(),
+        () => this.checkIncomingCall()
     ];
     window.interval_functions = [];
     must_always_be_updated.forEach(cb => {

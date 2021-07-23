@@ -503,25 +503,16 @@ export let incomingCall = function(properties) {
 }
 
 export let checkIncomingCall = function() {
-    let self = this;
-    let check = function() {
-        if (!window.navigator.onLine) {
-            setTimeout(check, 5000);
+    return new Promise((res, rej) => {
+        if (!window.navigator.onLine || this.state.calling) {
+            res()
             return;
         }
-        if (!self.state.calling) {
-            setTimeout(() => {
-                sw.checkIncomingCall(self.settings.id).then(resp => {
-                    self.incomingCall({ chatName: resp.chatName, dp: resp.dp, id: resp.id, type: resp.type });
-                }).catch((err) => {
-                    if (err == 0)
-                        check();
-                    else
-                    //Connection error
-                        console.log('can\'t fetch new calls => ' + err);
-                });
-            }, 1000);
-        }
-    }
-    check()
+
+        sw.checkIncomingCall(this.settings.id).then(resp => {
+            this.incomingCall({ chatName: resp.chatName, dp: resp.dp, id: resp.id, type: resp.type });
+        }).catch(e => {}).finally(() => {
+            res();
+        })
+    })
 }

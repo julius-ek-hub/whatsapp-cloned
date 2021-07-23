@@ -433,7 +433,7 @@ export let prepareReply = function(messageId, close) {
         window.getting_url_info = false;
     } else {
 
-        if (messageId == null) {
+        if (messageId == null || ac.checkBlock(s, cid)) {
             return;
         }
 
