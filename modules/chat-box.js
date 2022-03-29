@@ -464,7 +464,7 @@ export let openChat = function(id) {
                     m.setWidth('unset');
                 }
                 if (diff <= 30 && i > 0) {
-                    $(all_dates[i - 1]).offset({ top: diff - 1 });
+                    // $(all_dates[i - 1]).offset({ top: diff - 1 });
                 } else if (i > 0) {
                     all_dates[i - 1].style.top = '-2px';
                 }

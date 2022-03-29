@@ -582,54 +582,54 @@ export function ajax() {
 export function Request(address, formdata) {
     return new Promise((resolve, reject) => {
 
-        let details = {
-            type: 'GET',
-            url: address,
-            processData: false,
-            contentType: false,
-            success: function(data) {
-                resolve(data)
-            },
-            error: function(err) {
-                reject('Coonection failed, Reason: ' + err);
-            }
-        }
-        if (formdata) {
-            let fd = new FormData();
-            for (let d in formdata) {
-                fd.append(d, formdata[d]);
-            }
-            details.type = 'POST';
-            details['data'] = fd;
-        }
-        $.ajax(details);
-
-        //When there is no jQuery
-
-        // let aj = ajax();
-        // aj.onload = function() {
-        //     if (this.status == 200) {
-        //         resolve(this.response);
-        //     } else if (this.status == 403) {
-        //         reject(Error('Access denied'))
-        //     } else {
-        //         reject(Error('Error communicating with the server! -> Status => ' + this.status));
+        // let details = {
+        //     type: 'GET',
+        //     url: address,
+        //     processData: false,
+        //     contentType: false,
+        //     success: function(data) {
+        //         resolve(data)
+        //     },
+        //     error: function(err) {
+        //         reject('Coonection failed, Reason: ' + err);
         //     }
-        // };
-        // aj.onerror = function() {
-        //     reject(Error('There was a problem connecting to the server'));
-        // };
+        // }
         // if (formdata) {
         //     let fd = new FormData();
         //     for (let d in formdata) {
         //         fd.append(d, formdata[d]);
         //     }
-        //     aj.open('POST', address, true);
-        //     aj.send(fd);
-        // } else {
-        //     aj.open('GET', address, true);
-        //     aj.send();
+        //     details.type = 'POST';
+        //     details['data'] = fd;
         // }
+        // $.ajax(details);
+
+        // When there is no jQuery
+
+        let aj = ajax();
+        aj.onload = function() {
+            if (this.status == 200) {
+                resolve(this.response);
+            } else if (this.status == 403) {
+                reject(Error('Access denied'))
+            } else {
+                reject(Error('Error communicating with the server! -> Status => ' + this.status));
+            }
+        };
+        aj.onerror = function() {
+            reject(Error('There was a problem connecting to the server'));
+        };
+        if (formdata) {
+            let fd = new FormData();
+            for (let d in formdata) {
+                fd.append(d, formdata[d]);
+            }
+            aj.open('POST', address, true);
+            aj.send(fd);
+        } else {
+            aj.open('GET', address, true);
+            aj.send();
+        }
     });
 }
 

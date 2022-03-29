@@ -31,7 +31,12 @@ class File {
 		}
 		if ($creatd) {
 			/************************************************************
-			Since we split the file in js, its time to join the files back to whole. All fractions must have the same name making it easy to join them as one. We recieve on fraction at a time from the client side and append it to the existing one or if it is the first half, it is appended to an empty file... so its all the same. For this reason, send the fractions in order else the rejoined file wont make sense.
+			Since we split the file in js, its time to join the files back to whole. 
+			All fractions must have the same name making it easy to join them as one. 
+			We recieve one fraction at a time from the client side and append it to the 
+			existing one or if it is the first half, it is appended to an empty file... 
+			so its all the same. For this reason, send the fractions in order else 
+			the rejoined file wont make sense.
 			*************************************************************/
 			$open = fopen($file_link, 'ab');//Opens an existing fraction or creates an empty file and open for appending (append binary) 
 			$readNew = fopen($this->tmp, 'rb'); // Open the new coming fraction for reading (read binary)

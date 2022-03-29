@@ -13,7 +13,7 @@ import {
 } from './modules/serviceWorker.js';
 import { prepareUtilities, loggedIn } from './modules/actions-proper.js';
 
-$(document).ready(() => {
+window.addEventListener('load', () => {
 
     let login = loggedIn();
     let w = new WhatsAppClone();
@@ -118,6 +118,7 @@ $(document).ready(() => {
 
     }).catch(err => {
         welcome.failed(err);
-        w.bottomInfo('Connection failed!', 'error')
+        w.bottomInfo('Connection failed!', 'error');
+        console.log(err)
     })
 })

@@ -22,22 +22,22 @@ define('CONN', array(
  */
 define('MAILER', array(
     'admin' => array(
-        'name' => 'WhatsApp Clone Admin',
-        'addr' => 'username@youremailprovider.theirextension', //eg james@website.com
-        'password' => 'password-to-this-email'
+        'name' => '247-dev.com - Admin',
+        'addr' => 'admin@247-dev.com',
+        'password' => 'Mangowanchop1-admin'
     ),
     'info' => array(
         'name' => 'Infomation',
-        'addr' => 'info@youremailprovider.theirextension', //eg info@247-dev.com
-        'password' => 'password-to-this-email'
+        'addr' => 'info@247-dev.com',
+        'password' => 'Mangowanchop1'
     ),
     'no_rep' => array(
         'name' => '247-dev',
-        'addr' => 'do-not-reply@youremailprovider.theirextension', // eg no-reply@google.com
-        'password' => 'password-to-this-email'
+        'addr' => 'no-reply@247-dev.com',
+        'password' => 'Mangowanchop1-no-reply'
     ),
-    'host' => 'yourhostingcompany', // eg smtp.hostinger.com, smtp.gmail.com
-    'port' => 587 //mostly 587
+    'port' => 465,
+    'host' => 'smtp.hostinger.com'
     ));
 
 //This function returns the appropriate meta tags, cool when when you have multiple pages 
