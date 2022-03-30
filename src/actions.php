@@ -7,6 +7,7 @@ require 'functions.php';
 require 'abs-classes/DBC.class.php';
 require 'abs-classes/File.class.php';
 require 'db.class.php';
+echo json_encode(CONN);
 $db = new WC(CONN);
 if(isset($_GET['countries'])){
 	$result = array();
