@@ -41,7 +41,7 @@ if (isset($_GET['invite']) && !empty($_GET['invite'])) {
 </head>
 
 <body>
-    <script type="module" src="./app.js"></script>
+    <!-- <script type="module" src="./app.js"></script> -->
     <script nomodule>
         document.write('This browser does not support modules');
     </script>

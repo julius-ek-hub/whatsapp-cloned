@@ -8,10 +8,10 @@ define('KEY_WORDS', 'codes, coding, projects, blogs, programming, js, javascript
 
 //Database connection settings
 define('CONN', array(
-    'HOST' => 'localhost',
-    'DBNAME' => 'whatsapp_clone_db',
-    'DBUSER' => 'root',
-    'PASSWORD' => ''
+    'HOST' => getenv('DB_HOST'),
+    'DBNAME' => getenv('DB_NAME'),
+    'DBUSER' => getenv('DB_USER'),
+    'PASSWORD' => getenv('DB_PASS')
 ));
 
 /**

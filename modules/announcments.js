@@ -123,8 +123,6 @@ export let welcomeScreen = function(message = 'Welcome') {
     wn.add_content(body);
 
     let failed = function(message = "Loading Failed") {
-        console.log(middle)
-        return;
         middle.truncate().addChild([
             make_el('div').class('h2 text-danger').html(message).delf,
             make_el('button').class('btn btn-light').clicked(() => {
