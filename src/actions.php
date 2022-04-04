@@ -7,7 +7,6 @@ require 'functions.php';
 require 'abs-classes/DBC.class.php';
 require 'abs-classes/File.class.php';
 require 'db.class.php';
-echo json_encode(CONN);
 $db = new WC(CONN);
 if(isset($_GET['countries'])){
 	$result = array();
@@ -71,7 +70,7 @@ elseif (isset($_POST['user_info']) && isset($_POST['invitation_code'])) {
 		
 	}
 	$db->exec("UPDATE visitors SET lastseen = '$ls' WHERE id = '$id'");
-	$userInfo = $db->exec("SELECT id, username, dp, tel, name_col, email, email_confirmed, mail_confirmation_code, about, country, account_type, read_receipt, public_last_seen, date_joined, notification_sound, other_sounds, enter_button, auto_refresh_chat, wallpaper, invitation_key, removed FROM visitors WHERE id = '$id'")->fetch_assoc();
+	$userInfo = $db->exec("SELECT id, username, dp, tel, name_col, about, country, account_type, read_receipt, public_last_seen, date_joined, notification_sound, other_sounds, enter_button, auto_refresh_chat, wallpaper, invitation_key, removed FROM visitors WHERE id = '$id'")->fetch_assoc();
 	$userInfo['blocked_chats'] = $db->blocked_or_muted_chats('block', $id);
 	$userInfo['muted_chats'] = $db->blocked_or_muted_chats('mute', $id);
 	$userInfo['blocked_by'] = $db->blocked_or_muted_chats('blocked_by', $id);
@@ -116,7 +115,7 @@ elseif(isset($_POST['logout'])){
 elseif (isset($_POST['user_exists'])){
 	$tel = $_POST['user_exists'];
 	try{
-	$res = $db->exec("SELECT id, username, dp, tel, country, removed FROM visitors WHERE tel = '$tel' OR email = '$tel'");
+	$res = $db->exec("SELECT id, username, dp, tel, country, removed FROM visitors WHERE tel = '$tel'");
 	if($res->num_rows == 1){
 		echo json_encode($res->fetch_assoc());
 	}else{
@@ -127,21 +126,6 @@ elseif (isset($_POST['user_exists'])){
   }
 }
 
-elseif (isset($_POST['verified_email'])) {
-	$tel = $_POST['verified_email'];
-	$res = $db->exec("SELECT email FROM visitors WHERE tel = '$tel' AND email != '' AND email_confirmed = 1");
-	if($res->num_rows == 1)
-		echo $res->fetch_assoc()['email'];
-	else 
-	    echo 0;
-}
-
-elseif (isset($_POST['reset_pin'])) {
-	$det = json_decode($_POST['reset_pin']);
-	$pin = password_hash($det->pin, PASSWORD_DEFAULT);
-	$res = $db->exec("UPDATE visitors SET pin = '$pin' WHERE email = '$det->email'");
-	echo 1;
-}
 
 elseif (isset($_GET['new_visitor_dp']) && isset($_FILES['file'])){
 	$_FILES['file']['name'] = $_GET['new_visitor_dp'];
@@ -595,7 +579,7 @@ elseif (isset($_POST['delete_account'])) {
 		rmdir($dir_);
    	}
   }
-  $db->exec("UPDATE visitors SET removed = 1, email = '', dp = '', mail_confirmation_code = '' WHERE id = '$id'");
+  $db->exec("UPDATE visitors SET removed = 1, dp = '',  WHERE id = '$id'");
   	destroy_cookie(array(
 		'uid' => $id,
 		'informed_ed' => false,

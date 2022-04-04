@@ -44,25 +44,17 @@ export let autoWelcomeMessage = function(chat) {
     const a = `*Hi there!*
          Thanks for taking your precious time to test my project. If you are a developer I will be so glad to have you as a mentor cuz I am just a junior developer but if you are a junior like me, we can work together. For any of the above, we can begin by sharing reliable contacts.
           If you are not a developer then God bless you for your support especially in your career.
-          Try to read everything about the features here => ${self.root.split('/app')[0]} and try them all not forgetting to report any issue.`;
+          Try to read everything about the features here => https://247-dev.com/projects/whatsapp-clone and try them all not forgetting to report any issue.`;
     const a1 = `You can download the project for free from the GitHub repository https://github.com/julius-ek-hub/whatsapp-clone
         But if you need concise source codes for some particular features in the project, then drop me an email here -> aids@247-dev.com with subject *WhatsApp Clone*`;
-    const b = `All my Online channels are new, please help me grow it together by:
-        Subscribing -> https://www.youtube.com/channel/UCyfzaf7uohrk_a1NTdWzakg?sub_confirmation=1 
-        ============ 
-        Follow me on Twitter -> https://twitter.com/247developer 
-        ============
-        Like the Facebook page -> https://www.facebook.com/julius.ekane.946/
-        Plssssss.. 
-        Thank you all! 
-        If you want to buy me a coffee, you can do that here -> https://www.buymeacoffee.com/julius.ek as God continues to bless you`;
+
     const c = `My name is *Julius Ekane* and I am a *Cameroonian* residing in the *UAE.* Programming has been my hobby, interest, joy, ever since 2017.
          I may not have studied it in a physical school but I appreciate myself for putting a lot of efforts getting resources online.`;
     const _d = `It was a terribly difficult thing in the beginning but now I can take whatever language I want.`;
     const e = `If you are a junior developer like me or an aspirant, this should be a motivation, we all must get there. Now let\'s talk`;
     const f = `How are you doing? Tell me about yourself.`;
     const g = `And sorry the messages upto this one are automatic. Once you reply, I will be here live else just add your email by going to your profile so we can meet again.`;
-    const all = [a, a1, b, c, _d, e, f, g];
+    const all = [a, a1, c, _d, e, f, g];
 
     function start(index = 0) {
         if (index >= all.length) {

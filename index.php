@@ -37,7 +37,7 @@ if (isset($_GET['invite']) && !empty($_GET['invite'])) {
         'global_css' => false
     ));
     ?>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 
 <body>

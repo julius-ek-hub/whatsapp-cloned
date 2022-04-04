@@ -4,6 +4,7 @@ import * as sw from './serviceWorker.js';
 
 export let Verify = function() {
     let self = this;
+    let lastZindex = 10;
     let dp_to_be_uploaded = null;
     let info = {
         username: 'Visitor',
@@ -57,6 +58,7 @@ export let Verify = function() {
     let requestNumber = function() {
 
         let request = () => {
+            auth_number.style({zIndex: ++lastZindex});
             return new Promise((resolve, reject) => {
                 auth_number.child(0).addChild([
                     helper.make_el('div').class('text-secondary top').addChild([
@@ -71,12 +73,6 @@ export let Verify = function() {
                             <a href="${self.mainRoot}" class = "dropdown-item">Return to main Home page</a>
                              <a href="https://www.247-dev.com/projects/whatsapp-clone" class = "dropdown-item">View Project features</a>
                             </div>
-                            </div>
-
-                            <div>
-                            If you have visited before and want to continue with your account, 
-                            use the same number and country keeping in mind that you have your PIN 
-                            or we have your Email.
                             </div>`
                         ).self,
                         helper.make_el('div').class('text-danger').id('error-tel').self
@@ -192,7 +188,7 @@ export let Verify = function() {
     let confirmOTP = function() {
         let request = () => {
             show_pin()
-
+            auth_confirm_tel.style({zIndex: ++lastZindex});
             return new Promise((res, rej) => {
                 auth_confirm_tel.removeClass('disappear-left').addClass('appear-left').child(0).addChild([
                     helper.make_el('div').class('text-secondary top').addChild([
@@ -245,6 +241,7 @@ export let Verify = function() {
     }
     let setDp = function() {
         let request = () => {
+            auth_set_dp.style({zIndex: ++lastZindex}); 
             return new Promise((res, rej) => {
                 auth_set_dp.removeClass('disappear-left').addClass('appear-left').child(0).addChild([
                     helper.make_el('div').class('text-secondary top').addChild([
@@ -354,62 +351,6 @@ export let Verify = function() {
                                 })
                             }
                         }).html('Login').self).self,
-                    ]).self,
-                    helper.make_el('div').style({
-                        padding: '8px',
-                        textAlign: 'left',
-                        color: 'rgba(0,0,0,0.7)'
-                    }).addChild([
-                        helper.make_el('span').html('If you forgot your PIN and provided a verified email during registration, ').self,
-                        helper.make_el('a').attr({
-                            href: 'javascript:void(0)'
-                        }).clicked(() => {
-                            let ld = new helper.Modal().Loading('Give us a sec... <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>');
-                            sw.emailForReset(info.telcode + info.tel).then(resp => {
-                                ld.loader.close()
-                                if (resp == 0) {
-                                    self.Alert('Sorry! But you don\'t have an Email with us.');
-                                    return;
-                                }
-
-                                let code = helper.random(100000, 900000);
-
-                                sw.email({
-                                    subject: 'PIN Reset',
-                                    b64_code: ('project=project_1&time=' + new Date().UTC_DATE()).to_b64(),
-                                    bodyLink: '#',
-                                    bodyLinkName: '',
-                                    body: 'Use the PIN above when next you want to login to your accout',
-                                    main: 'PIN: ' + code,
-                                    from: 'no_rep',
-                                    receipients: [resp]
-                                }).then(() => {
-                                    ld = new helper.Modal().Loading('Updating info... <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>');
-                                    sw.resetPIN(resp, code).then(() => {
-                                        ld.loader.close();
-                                        self.Alert({
-                                            body: (`Your new PIN has been sent to your email, you will use this PIN henceforth 
-                                                   and each time you forget it, the process continues. You will learn all these too if you wish. 
-                                                   Check your email, it should be there in less 
-                                                   than 5 minutes else click to resend the email.`),
-                                            width: 70,
-                                            direction: 'bottom',
-                                            cancelText: 'Got it'
-                                        });
-                                    }).catch(err => {
-                                        ld.loader.close();
-                                        self.bottomInfo('Failed to reset PIN', 'error');
-                                    })
-
-                                }).catch((err) => {})
-
-
-                            }).catch(err => {
-                                ld.loader.close();
-                                self.bottomInfo('Operation Failed', 'error');
-                            })
-                        }).html('Click here').self,
-                        helper.make_el('span').html(' and we\'ll send a new PIN to your verified email. But if you did not provide an email, then you have lost the Account. You may have to create another, it\'s simple.').self
                     ]).self,
                     helper.make_el('button').attr({
                         onclick: (e) => {

@@ -71,40 +71,6 @@ export function checkIfUserExists(tel) {
     })
 }
 
-//Get verified email of user for PIN reset
-
-export function emailForReset(tel) {
-    return new Promise((res, rej) => {
-        helper.Request('src/actions.php', {
-            verified_email: tel.trim()
-        }).then(respond => {
-            res(respond)
-        }).catch(err => {
-            rej(err)
-        })
-    })
-}
-
-// Reset PIN
-
-export function resetPIN(em, pin) {
-    return new Promise((res, rej) => {
-        helper.Request('src/actions.php', {
-            reset_pin: JSON.stringify({
-                pin: pin,
-                email: em.trim()
-            })
-        }).then(respond => {
-            if (respond == 1)
-                res()
-            else
-                rej()
-        }).catch(err => {
-            rej(err)
-        })
-    })
-}
-
 /**
  * Add a new visitor to the db
  */
@@ -832,25 +798,6 @@ export function searchGIF(search) {
             res(typeof resp == 'object' ? resp : JSON.parse(resp))
         }).catch(err => {
             rej(err)
-        })
-    })
-}
-
-export function email(email) {
-    return new Promise((res, rej) => {
-        let ld = new helper.Modal().Loading('Hang on... <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>');
-        helper.Request('mail/send.php', {
-            mail: JSON.stringify(email)
-        }).then(response => {
-            ld.loader.close();
-            if (response == 1)
-                res()
-            else
-                rej(response)
-        }).catch(err => {
-            rej(err + ', Error => ' + response);
-            ld.loader.close();
-            helper.smoothAlert('<div class = "text-danger">Send fail, try again</div>');
         })
     })
 }

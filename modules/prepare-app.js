@@ -261,7 +261,6 @@ export let realLaunching = function(id, welcome) {
         window.interval_functions.push({ run: cb, once: false });
     })
     sw.start_live_updates();
-    this.getEmail();
     this.informUser();
 }
 
@@ -343,23 +342,14 @@ export let launchHome = function() {
         helper.make_el('button').attr({
             class: 'dropdown-item text-danger',
             onclick: () => {
-                new helper.Modal().Confirm({
-                    title: '1 sec<hr>',
-                    content: 'Just in case you wish to visit again then please make sure you have saved the ' +
-                        'number and PIN you got during registration. If not you can just simply go to settings and ' +
-                        'add a genuine email so we can always send your PIN to it when you forget during login. ' +
-                        'It\'s been nice you sacrificed your time to test my project. <hr><b>God</b> bless your career!',
-                    acceptText: 'Logout'
-                }).then(() => {
-                    let loading = new helper.Modal().Loading('<div class="text-muted">Logging Out... <i class="fa fa-spinner fa-spin" style="font-size:24px"></i></div>');
-                    sw.logOut(id).then(() => {
-                        localStorage.clear();
-                        setTimeout(() => {
-                            loading.loader.close()
-                            window.location.reload()
-                        }, 2000)
-                    })
-                }).catch(er => {})
+                let loading = new helper.Modal().Loading('<div class="text-muted">Logging Out... <i class="fa fa-spinner fa-spin" style="font-size:24px"></i></div>');
+                sw.logOut(id).then(() => {
+                    localStorage.clear();
+                    setTimeout(() => {
+                        loading.loader.close()
+                        window.location.reload()
+                    }, 2000)
+                })
             }
         }).html('<span class="material-icons-outlined text-danger">power_settings_new</span> <span class="drop-item text-danger">Logout</span>').self,
     ];

@@ -919,36 +919,6 @@ export let openProfile = function(chat_id) {
                     //
             }
         }).style({ visibility: 'visible' }).html('<span class="material-icons-outlined text-danger">delete</span>').self
-    ])
-    let red = '',
-        em_html = '(Click to add Email)';
-    if (settings.id == myId) {
-        let em = settings.email;
-        if (!em.empty()) {
-            em_html = em;
-            if (settings.email_confirmed == 0) {
-                red = ' <span class="text-muted">(Unconfirmed)</span>';
-            }
-        } else {
-            red = ' <i class="fa fa-circle text-danger"></i>';
-        }
-    }
-    let addEmail = helper.make_el('div').class('profile-values-container').addChild([
-        helper.make_el('div').html('<span class="material-icons-outlined">email</span>').self,
-        helper.make_el('div').attr({
-            onclick: () => {
-                self.getEmail(false, true);
-            }
-        }).class('profile-values').style({ cursor: 'pointer' }).addChild([
-            helper.make_el('span').class('text-muted').html('Email' + red).self,
-            helper.make_el('div').id('profile_email').html(em_html).self
-        ]).self,
-        helper.make_el('div').attr({
-            class: 'has_click_event',
-            onclick: () => {
-                self.getEmail('edit');
-            }
-        }).style({ visibility: visibility }).html(edit_icon).self
     ]);
 
     let enterBtnEqualsSend = helper.make_el('div').class('profile-values-container').addChild([
@@ -1196,7 +1166,6 @@ export let openProfile = function(chat_id) {
 
     if (!chat_id) {
         [
-            addEmail.self,
             blockedConts.self,
             mutedConts.self,
             wallPP.self,

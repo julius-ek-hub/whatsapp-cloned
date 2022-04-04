@@ -746,13 +746,14 @@ export function smoothAlert(props) {
             break;
     }
     let container = make_el('div').style({
-        overflow: 'auto'
+        overflow: 'auto',
     }).addChild(defaultProps.body);
 
     make_el('div').style({
         display: 'table-cell',
         width: '100%',
         overflow: 'auto',
+        padding: '10px',
         verticalAlign: 'middle'
     }).addChild([
         container.self,

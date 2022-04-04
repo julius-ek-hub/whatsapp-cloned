@@ -75,33 +75,6 @@ function validate_all($obj){
   return $obj;
 }
 
- function add_subscriber($em) {
-	 try {
-	$stmt = $this->prepare("SELECT sn FROM subscribers WHERE email = ?");
-	$stmt->bind_param('s', $em); 
-	$stmt->execute();
-
-	$sql = $stmt->get_result();   
-	if($sql->num_rows == 0){
-	$stmt2 = $this->prepare("INSERT INTO subscribers (email) VALUES(?)");
-	$stmt2->bind_param('s', $em);
-	$stmt2->execute();
-    $stmt2->close();
-	return 1;
-	 }else {
-		return 2;
-	 }
-	 $stmt->close();
-	 } catch (PreparedStatementException  $p) {
-		    $this->exec("CREATE TABLE subscribers(
-			sn int(10) NOT NULL AUTO_INCREMENT,
-			email varchar(100) NOT NULL,
-			PRIMARY KEY(sn)
-		)");
-		return $this->add_subscriber($em);
-	 }
-
-}
 
 function rate_project($proj){
 	$tab = $proj->table;

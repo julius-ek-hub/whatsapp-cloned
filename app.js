@@ -18,8 +18,8 @@ window.addEventListener('load', () => {
     let login = loggedIn();
     let w = new WhatsAppClone();
     w.init();
-    w.addProperties({ mainRoot: 'http://localhost/whatsapp-clone/' });
-    w.addProperties({ root: 'http://localhost/whatsapp-clone/' });
+    w.addProperties({ mainRoot: './' });
+    w.addProperties({ root: './' });
     let welcome = w.welcomeScreen(login ? 'Loading' : 'Welcome');
     welcome.launch();
     getAllCountries().then(resp => {

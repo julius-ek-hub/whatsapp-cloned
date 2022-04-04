@@ -1,6 +1,6 @@
 <?php
 
-define('ROOT', 'http://localhost/whatsapp-clone');
+define('ROOT', getenv('ROOT'));
 // Color of the addres bar
 define('THEME_COL', '#1BA691');
 // Keywords for SEO
@@ -14,31 +14,6 @@ define('CONN', array(
     'PASSWORD' => getenv('DB_PASS')
 ));
 
-/**
- * After installing phpmailer, you have to edit this array to your email credentials.
- * When you send an email from the client (JS), the `from` property would only accept any of admin, info, no_rep .... 
- * You can add more emails if you have, following the same order and then refer to it from the client side using the 
- * main property and the rest will be automatically taken.
- */
-define('MAILER', array(
-    'admin' => array(
-        'name' => '247-dev.com - Admin',
-        'addr' => 'admin@247-dev.com',
-        'password' => 'Mangowanchop1-admin'
-    ),
-    'info' => array(
-        'name' => 'Infomation',
-        'addr' => 'info@247-dev.com',
-        'password' => 'Mangowanchop1'
-    ),
-    'no_rep' => array(
-        'name' => '247-dev',
-        'addr' => 'no-reply@247-dev.com',
-        'password' => 'Mangowanchop1-no-reply'
-    ),
-    'port' => 465,
-    'host' => 'smtp.hostinger.com'
-    ));
 
 //This function returns the appropriate meta tags, cool when when you have multiple pages 
 function head_meta($d){

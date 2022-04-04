@@ -106,7 +106,7 @@ export let welcomeScreen = function(message = 'Welcome') {
         }).html(`${message}... <i class="fa fa-spinner fa-pulse"></i>`).self,
         helper.make_el('div').class('text-muted p-2').html('Trying to completely load audio files for sound system. If this is taking too long you can skip it!').hide().self,
         skip.self
-    ]).self
+    ]);
 
     let bottom = helper.make_el('div').attr({
         class: 'wc-wlcm-down'
@@ -119,13 +119,14 @@ export let welcomeScreen = function(message = 'Welcome') {
         }).html(this.username('0001', 'Julius')).self
     ]).self
 
-    let body = helper.make_el('div').addChild([top, middle, bottom]).self
+    let body = helper.make_el('div').addChild([top, middle.self, bottom]).self
     wn.add_content(body);
 
     let failed = function(message = "Loading Failed") {
+
         middle.truncate().addChild([
-            make_el('div').class('h2 text-danger').html(message).delf,
-            make_el('button').class('btn btn-light').clicked(() => {
+            helper.make_el('div').class('h2 text-danger').html(message).self,
+            helper.make_el('button').class('btn btn-light').clicked(() => {
                 window.location.reload();
             }).html('Reload').self
         ])

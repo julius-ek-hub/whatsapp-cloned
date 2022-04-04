@@ -353,12 +353,6 @@ export let openChat = function(id) {
                 }
             }).class('dropdown-item').html(m_()).self,
             helper.make_el('button').attr({
-                class: 'dropdown-item',
-                onclick: () => {
-                    self.reportChat(id, s.id, info);
-                }
-            }).html('Report').self,
-            helper.make_el('button').attr({
                 onclick: (e) => {
                     sw.blockContact(id, myId).then((resp) => {
                         self.bottomInfo(`${info.tel} has been ${b_()}ed!`, 'success');
