@@ -86,7 +86,9 @@ export function add_visitor(info) {
             new_visitor: JSON.stringify(info),
             invitation_code: ik == null ? 0 : ik.trim()
         }).then(respond => {
-            res(JSON.parse(respond));
+            let resp = JSON.parse(respond);
+            document.cookie = `uid=${resp.id}; SameSite=Strict; Secure`;
+            res(resp);
         }).catch(err => {
             console.log(err)
             rej(err)

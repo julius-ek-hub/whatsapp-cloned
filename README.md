@@ -1,9 +1,9 @@
 # WhatsApp Clone
 
-This is my very first project on Github. A fully functioning full stack Web App.
-I call it WhatsApp Clone because it looks like WhatsApp except that its a little crappier.
-It is completely free to clone or download and modify for any use whatsoever.
-The entire App runs on a single page, the JavaScript is pure with no Libraries or Frameworks. 
+A fully functioning full stack Web App.
+
+Call it WhatsApp Clone because it looks like WhatsApp except that its crappy.
+the JavaScript is pure with no Libraries or Frameworks. 
 
 ## Configurations
 

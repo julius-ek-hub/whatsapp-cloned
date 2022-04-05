@@ -626,7 +626,7 @@ elseif (isset($_POST['export_chat'])) {
 			$file = json_decode($file);
 			$t_ = $file->type;
 		    $dir_ = $t_ == 'picture' ? 'Pictures' : ($t_ == 'record' ? 'Recordings' : 'Documents');
-			$file_mess = ROOT . '/file-viewer/?f=' . base64_encode(ROOT . '/visitors/' .$value['id'] . '/' . $dir_ . '/' . $file->url);
+			$file_mess = './file-viewer/?f=' . base64_encode('./visitors/' .$value['id'] . '/' . $dir_ . '/' . $file->url);
 		}
 
 		$ds = $value['dateSent'];
@@ -691,6 +691,6 @@ elseif (isset($_POST['export_chat'])) {
 elseif (isset($_GET['report_files_upload']) && isset($_FILES['file'])){
 	$_FILES['file']['name'] = $_GET['report_files_upload'];
 	$f = new File($_FILES['file']);
-	echo trim(ROOT . '/file-viewer/?f=' . base64_encode(ROOT . '/uploads/' . $f->save_to('../uploads')));
+	echo trim('./file-viewer/?f=' . base64_encode('./uploads/' . $f->save_to('../uploads')));
 }
 ?>

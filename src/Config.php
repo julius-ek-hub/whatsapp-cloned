@@ -1,6 +1,5 @@
 <?php
 
-define('ROOT', getenv('ROOT'));
 // Color of the addres bar
 define('THEME_COL', '#1BA691');
 // Keywords for SEO
@@ -23,7 +22,6 @@ function head_meta($d){
     $url = $d['url'];
     $typ = $d['type'];
     $tc = $d['theme-col'];
-    $ROOT = ROOT;  
     $data = <<< _END
     
     <title>$t</title>
@@ -61,8 +59,7 @@ return $data;
 
 // Repeated links for multiple pages
 function head_urls($d){
-    $ROOT = ROOT;
-    $gcss = $d['global_css'] ? '<link rel="stylesheet" href="' . ROOT. '/css/global.css">' : '';
+    $gcss = $d['global_css'] ? '<link rel="stylesheet" href="./css/global.css">' : '';
     $data = <<< _END
 
     <script src="https://kit.fontawesome.com/d26d3e999a.js" crossorigin="anonymous"></script>
@@ -76,7 +73,7 @@ function head_urls($d){
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin = "true"/>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="$ROOT/css/helper.css">
+    <link rel="stylesheet" href="./css/helper.css">
     $gcss
  
 _END;

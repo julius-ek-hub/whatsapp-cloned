@@ -9,7 +9,7 @@ export let prepareElements = function() {
     this.rightInner.appendTo(this.right.self);
 
     this.defaultMessage = helper.make_el('div').class('message-container center')
-        .addChild(helper.make_el('div').class('message text-dark security').html(
+        .addChild(helper.make_el('div').class('message text-dark security p-2 pl-3 pr-3').html(
             '<i class="fa fa-unlock-alt"></i> Messages you send to this chat are not very secured ' +
             'so do not share sensible, private information. <a href="javascript:void(0)">Learn more...</a>').self);
 

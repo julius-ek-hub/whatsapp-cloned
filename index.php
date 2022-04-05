@@ -2,7 +2,7 @@
 include 'src/Config.php';
 include 'src/abs-classes/DBC.class.php';
 $description = 'Try testing this project built using only PHP, MySQL, JavaScript and HTML5/CSS3';
-$thumbnail = ROOT . '/images/whatsapp-logo.png';
+$thumbnail = './images/whatsapp-logo.png';
 if (isset($_GET['invite']) && !empty($_GET['invite'])) {
     $ik = $_GET['invite'];
     $db = new DBC(CONN);
@@ -13,7 +13,7 @@ if (isset($_GET['invite']) && !empty($_GET['invite'])) {
         $country = $db->exec("SELECT nicename FROM country WHERE iso = '" . $info['country'] . "'")->fetch_assoc()['nicename'];
         $description = ($info['username'] == 'Visitor' ? $info['tel'] : $info['username']) . ' from ' . $country . ' will like to test WhatsApp Clone with you';
         if(!empty($info['dp'])){
-            $thumbnail = ROOT . '/visitors/' . $info['id'] . '/dp/' . $info['dp'];
+            $thumbnail = './visitors/' . $info['id'] . '/dp/' . $info['dp'];
          }
         }
     } catch (MYSQLException $e) {}
@@ -26,7 +26,6 @@ if (isset($_GET['invite']) && !empty($_GET['invite'])) {
      echo head_meta(array(
         'description' => $description,
         'image' => $thumbnail,
-        'url' => ROOT,
         'keywords' => 'whatsapp, projects, javascript, php, mysql',
         'title' => 'WhatsApp Clone | App',
         'type' => 'app',
